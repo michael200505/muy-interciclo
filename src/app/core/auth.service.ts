@@ -1,15 +1,21 @@
-import { Injectable } from '@angular/core';
-import { Auth, GoogleAuthProvider, signInWithPopup, signOut } from '@angular/fire/auth';
+import { Injectable, inject, Injector, runInInjectionContext } from '@angular/core';
+import { Auth, signInWithPopup, GoogleAuthProvider, signOut } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private auth: Auth) {}
+  private auth = inject(Auth);
+  private injector = inject(Injector);
 
   loginWithGoogle() {
-    return signInWithPopup(this.auth, new GoogleAuthProvider());
+    const provider = new GoogleAuthProvider();
+
+    // ✔ Ejecutar Firebase dentro del contexto Angular
+    return runInInjectionContext(this.injector, () => {
+      return signInWithPopup(this.auth, provider);
+    });
   }
 
   logout() {

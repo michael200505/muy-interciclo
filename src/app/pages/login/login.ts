@@ -9,15 +9,15 @@ import { AuthService } from '../../core/auth.service';
 })
 export class LoginComponent {
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   login() {
     this.authService.loginWithGoogle()
-      .then((user: any) => {
-        console.log("Usuario autenticado:", user);
+      .then(user => {
+        console.log('Usuario autenticado:', user);
       })
-      .catch((err: any) => {
-        console.error("Error:", err);
+      .catch(err => {
+        console.error('Error en login:', err);
       });
   }
 }
