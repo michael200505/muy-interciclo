@@ -1,0 +1,42 @@
+<h1>Panel de Administrador</h1>
+
+<h2>Usuarios Registrados</h2>
+
+<div *ngFor="let user of users" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+  <strong>{{ user.displayName }}</strong> ({{ user.email }})
+  <br>
+  Rol actual: <b>{{ user.role }}</b>
+  <br><br>
+
+  <button (click)="selectUser(user)">Convertir a Programador</button>
+  <button (click)="makeAdmin(user)">Asignar Administrador</button>
+</div>
+
+<hr>
+
+<h2>Crear Perfil de Programador</h2>
+
+<div *ngIf="selectedUser">
+  <p>Creando perfil para: <b>{{ selectedUser.displayName }}</b></p>
+
+  <label>Nombre:</label>
+  <input type="text" [(ngModel)]="newProgrammer.name">
+
+  <label>Especialidad:</label>
+  <input type="text" [(ngModel)]="newProgrammer.specialty">
+
+  <label>Descripción:</label>
+  <textarea [(ngModel)]="newProgrammer.description"></textarea>
+
+  <button (click)="makeProgrammer()">Guardar Programador</button>
+</div>
+
+<hr>
+
+<h2>Programadores Registrados</h2>
+
+<div *ngFor="let prog of programmers" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+  <img [src]="prog.photoURL" width="50">
+  <h3>{{ prog.name }}</h3>
+  <p>{{ prog.specialty }}</p>
+</div>

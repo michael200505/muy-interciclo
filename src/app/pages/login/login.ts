@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../../core/auth.service';
+import { Component, inject } from '@angular/core';
+import { AuthService } from '../../core/auth/auth.service';
+import { UserService } from '../../core/user/user.service';
 
 @Component({
   selector: 'app-login',
@@ -9,15 +10,15 @@ import { AuthService } from '../../core/auth.service';
 })
 export class LoginComponent {
 
-  constructor(private authService: AuthService) {}
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   login() {
     this.authService.loginWithGoogle()
-      .then(user => {
-        console.log('Usuario autenticado:', user);
+      .then(async (cred) => {
+        console.log("Usuario autenticado:", cred.user);
+        await this.userService.saveUser(cred.user);
       })
-      .catch(err => {
-        console.error('Error en login:', err);
-      });
+      .catch((err) => console.error("Error en login:", err));
   }
 }
