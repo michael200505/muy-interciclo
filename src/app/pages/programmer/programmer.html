@@ -1,1 +1,54 @@
 <h1>Panel del Programador</h1>
+
+<div *ngIf="programmer">
+  <h2>{{ programmer.name }}</h2>
+  <p>{{ programmer.specialty }}</p>
+  <p>{{ programmer.description }}</p>
+  <hr>
+</div>
+
+<h2>Mis Proyectos</h2>
+
+<button (click)="goToNewProject()">Nuevo Proyecto</button>
+
+<select [(ngModel)]="categoryFilter">
+  <option value="all">Todos</option>
+  <option value="academic">Académicos</option>
+  <option value="work">Laborales</option>
+</select>
+
+<div *ngFor="let p of projects">
+  <div *ngIf="categoryFilter === 'all' || categoryFilter === p.category"
+       style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+    
+    <h3>{{ p.name }} ({{ p.category }})</h3>
+    <p>{{ p.description }}</p>
+    <p><b>Tipo:</b> {{ p.participation }}</p>
+    <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+
+    <a *ngIf="p.repoUrl" [href]="p.repoUrl" target="_blank">Repositorio</a> |
+    <a *ngIf="p.demoUrl" [href]="p.demoUrl" target="_blank">Demo</a>
+
+    <br><br>
+    <button (click)="deleteProject(p.id!)">Eliminar</button>
+  </div>
+</div>
+
+<hr>
+
+<h2>Solicitudes de Asesoría</h2>
+
+<div *ngFor="let a of asesorias"
+     style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+
+  <strong>{{ a.requesterName }}</strong>  
+  ({{ a.requesterEmail }})  
+
+  <p>Fecha: {{ a.date }} - {{ a.time }}</p>  
+  <p>Comentario: {{ a.comment }}</p>  
+
+  <p><b>Estado:</b> {{ a.status }}</p>
+
+  <button (click)="updateAsesoria(a, 'approved')">Aprobar</button>
+  <button (click)="updateAsesoria(a, 'rejected')">Rechazar</button>
+</div>

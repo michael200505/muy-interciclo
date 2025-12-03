@@ -1,2 +1,10 @@
-<h1>Bienvenido al Portafolio</h1>
-<button>Agendar Asesoría</button>
+<h1>Programadores Disponibles</h1>
+
+<div *ngFor="let p of programmers"
+     style="border:1px solid #ccc; padding:10px; margin-bottom:10px; cursor:pointer"
+     (click)="openPortfolio(p.uid)">
+
+  <img [src]="p.photoURL" width="60" style="border-radius:50%">
+  <h2>{{ p.name }}</h2>
+  <p>{{ p.specialty }}</p>
+</div>

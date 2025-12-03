@@ -30,5 +30,32 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: ''
-  }
+  },
+  {
+  path: 'programmer',
+  loadComponent: () => import('./pages/programmer/programmer').then(m => m.ProgrammerPanelComponent),
+  canActivate: [roleGuard],
+  data: { role: 'programmer' }
+},
+{
+  path: 'programmer/new-project',
+  loadComponent: () => import('./pages/programmer/project-form').then(m => m.ProjectFormComponent),
+  canActivate: [roleGuard],
+  data: { role: 'programmer' }
+},
+
+{
+  path: '',
+  loadComponent: () => import('./pages/home/home').then(m => m.PublicHomeComponent)
+},
+{
+  path: 'portfolio/:id',
+  loadComponent: () => import('./pages/portfolio/portfolio').then(m => m.PortfolioComponent)
+},
+{
+  path: 'agendar/:id',
+  loadComponent: () => import('./pages/agendar/agendar').then(m => m.AgendarAsesoriaComponent)
+},
+
+  
 ];

@@ -1,0 +1,19 @@
+<h1>Agendar Asesoría</h1>
+
+<label>Nombre:</label>
+<input type="text" [(ngModel)]="form.name">
+
+<label>Email:</label>
+<input type="email" [(ngModel)]="form.email">
+
+<label>Fecha:</label>
+<input type="date" [(ngModel)]="form.date">
+
+<label>Hora:</label>
+<input type="time" [(ngModel)]="form.time">
+
+<label>Comentario (opcional):</label>
+<textarea [(ngModel)]="form.comment"></textarea>
+
+<br>
+<button (click)="send()">Enviar Solicitud</button>

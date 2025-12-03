@@ -1,0 +1,34 @@
+<h2>Nuevo Proyecto</h2>
+
+<label>Nombre:</label>
+<input type="text" [(ngModel)]="project.name">
+
+<label>Descripción:</label>
+<textarea [(ngModel)]="project.description"></textarea>
+
+<label>Categoría:</label>
+<select [(ngModel)]="project.category">
+  <option value="academic">Académico</option>
+  <option value="work">Laboral</option>
+</select>
+
+<label>Participación:</label>
+<select [(ngModel)]="project.participation">
+  <option value="frontend">Frontend</option>
+  <option value="backend">Backend</option>
+  <option value="database">Base de datos</option>
+  <option value="fullstack">Fullstack</option>
+</select>
+
+<label>Tecnologías (separar por comas):</label>
+<input type="text" [(ngModel)]="project.technologies">
+
+<label>Repositorio:</label>
+<input type="text" [(ngModel)]="project.repoUrl">
+
+<label>Demo URL:</label>
+<input type="text" [(ngModel)]="project.demoUrl">
+
+<br><br>
+
+<button (click)="save()">Guardar</button>

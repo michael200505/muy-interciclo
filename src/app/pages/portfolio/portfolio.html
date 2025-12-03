@@ -1,0 +1,23 @@
+<div *ngIf="programmer">
+  <img [src]="programmer.photoURL" width="100" style="border-radius:50%">
+  <h1>{{ programmer.name }}</h1>
+  <h3>{{ programmer.specialty }}</h3>
+  <p>{{ programmer.description }}</p>
+
+  <button (click)="agendar(programmer.uid)">Agendar Asesoría</button>
+
+  <hr>
+  <h2>Proyectos</h2>
+
+  <div *ngFor="let project of projects"
+       style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+
+    <h3>{{ project.name }} ({{ project.category }})</h3>
+    <p>{{ project.description }}</p>
+    <p><b>Participación:</b> {{ project.participation }}</p>
+    <p><b>Tecnologías:</b> {{ project.technologies.join(', ') }}</p>
+
+    <a *ngIf="project.repoUrl" [href]="project.repoUrl" target="_blank">Repositorio</a> |
+    <a *ngIf="project.demoUrl" [href]="project.demoUrl" target="_blank">Demo</a>
+  </div>
+</div>

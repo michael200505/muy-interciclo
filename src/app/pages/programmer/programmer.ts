@@ -1,8 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Auth } from '@angular/fire/auth';
+import { ProjectService } from '../../core/project/project.service';
+import { AsesoriaService } from '../../core/asesoria/asesoria.service';
+import { ProgrammerService } from '../../core/programmer/programmer.service';
+import { Project } from '../../core/models/project.model';
+import { Asesoria } from '../../core/models/asesoria.model';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-programmer',
   standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './programmer.html'
 })
-export class ProgrammerPanelComponent {}
+export class ProgrammerPanelComponent {
+
+  private auth = inject(Auth);
+  private projectService = inject(ProjectService);
+  private asesoriaService = inject(AsesoriaService);
+  private programmerService = inject(ProgrammerService);
+  private router = inject(Router);
+
+  programmerId: string = '';
+  projects: Project[] = [];
+  asesorias: Asesoria[] = [];
+  programmer: any = null;
+
+  categoryFilter: string = 'all';
+
+  async ngOnInit() {
+    const user = this.auth.currentUser;
+    if (!user) return;
+
+    this.programmerId = user.uid;
+
+    this.programmer = await this.programmerService.getProgrammer(user.uid);
+    this.projects = await this.projectService.getProjectsByProgrammer(user.uid);
+    this.asesorias = await this.asesoriaService.getAsesoriasByProgrammer(user.uid);
+  }
+
+  async deleteProject(id: string) {
+    if (!confirm("¿Eliminar este proyecto?")) return;
+    await this.projectService.deleteProject(id);
+    this.projects = await this.projectService.getProjectsByProgrammer(this.programmerId);
+  }
+
+  goToNewProject() {
+    this.router.navigate(['/programmer/new-project']);
+  }
+
+  async updateAsesoria(asesoria: Asesoria, status: string) {
+    const message = prompt("Mensaje de respuesta:");
+    await this.asesoriaService.updateAsesoriaStatus(
+      asesoria.id!,
+      status as any,
+      message || ''
+    );
+    this.asesorias = await this.asesoriaService.getAsesoriasByProgrammer(this.programmerId);
+  }
+}
