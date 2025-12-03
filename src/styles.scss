@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f6f7f9;
+}
+
+button {
+  background: #3b82f6;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
+}
