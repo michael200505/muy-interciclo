@@ -1,6 +1,6 @@
- import { Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/user/user.service';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 import { AppUser } from '../../core/models/user.model';
@@ -12,7 +12,7 @@ import { PageContainerComponent } from "../../ui/container/container";
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, AdminSidebarComponent, PageContainerComponent], // ✅ <-- agregar FormsModule aquí
+  imports: [CommonModule, FormsModule, HeaderComponent, AdminSidebarComponent, PageContainerComponent],
   templateUrl: './admin.html'
 })
 export class AdminPanelComponent {
@@ -24,6 +24,7 @@ export class AdminPanelComponent {
   programmers: ProgrammerProfile[] = [];
 
   selectedUser: AppUser | null = null;
+
   newProgrammer: ProgrammerProfile = {
     uid: '',
     name: '',

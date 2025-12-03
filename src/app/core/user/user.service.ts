@@ -1,18 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-  doc,
-  setDoc,
-  getDoc
-} from '@angular/fire/firestore';
-
-export interface AppUser {
-  uid: string;
-  email: string;
-  displayName: string;
-  photoURL: string;
-  role: string;
-}
+import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +8,12 @@ export class UserService {
 
   constructor(private firestore: Firestore) { }
 
-  // ✔ Guarda o actualiza un usuario
   async saveUser(user: any): Promise<void> {
+    console.log("Intentando guardar usuario en Firestore...");
+
     const ref = doc(this.firestore, 'users', user.uid);
 
-    const data: AppUser = {
+    const data = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
@@ -33,19 +21,20 @@ export class UserService {
       role: 'user'
     };
 
+    console.log("Datos enviados:", data);
+
     await setDoc(ref, data, { merge: true });
+
+    console.log("Usuario guardado correctamente.");
   }
 
-  // ✔ Obtiene usuario desde Firestore
-  async getUser(uid: string): Promise<AppUser | null> {
+  async getUser(uid: string) {
     const ref = doc(this.firestore, 'users', uid);
     const snap = await getDoc(ref);
-    return snap.exists() ? (snap.data() as AppUser) : null;
+    return snap.exists() ? snap.data() : null;
   }
 
-  // ✔ Actualiza el rol del usuario
-  async setRole(uid: string, role: string): Promise<void> {
-    const ref = doc(this.firestore, 'users', uid);
-    await setDoc(ref, { role }, { merge: true });
+  async setRole(uid: string, role: string) {
+    await setDoc(doc(this.firestore, 'users', uid), { role }, { merge: true });
   }
 }
