@@ -5,6 +5,7 @@ import { ProgrammerProfile } from '../../core/models/programmer.model';
 import { Router } from '@angular/router';
 import { HeaderComponent } from "../../ui/header/header";
 import { PageContainerComponent } from "../../ui/container/container";
+imports: [PageContainerComponent]
 
 @Component({
   selector: 'app-home',
