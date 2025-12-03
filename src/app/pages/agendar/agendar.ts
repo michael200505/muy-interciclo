@@ -51,7 +51,7 @@ export class AgendarAsesoriaComponent {
       createdAt: Date.now()
     });
 
-    alert("Solicitud enviada. El programador te responderá pronto.");
+    alert("Solicitud enviada. El programador recibirá una notificación en su panel y te responderá por este medio (simulado) o por correo/WhatsApp.");
     this.router.navigate(['/']);
   }
 }

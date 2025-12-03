@@ -30,6 +30,10 @@ export class ProgrammerPanelComponent {
 
   categoryFilter: string = 'all';
 
+  get pendingCount(): number {
+    return this.asesorias.filter(a => a.status === 'pending').length;
+  }
+
   async ngOnInit() {
     const user = this.auth.currentUser;
     if (!user) return;
@@ -52,12 +56,19 @@ export class ProgrammerPanelComponent {
   }
 
   async updateAsesoria(asesoria: Asesoria, status: string) {
-    const message = prompt("Mensaje de respuesta:");
+    const message = prompt("Mensaje de respuesta para el solicitante:");
     await this.asesoriaService.updateAsesoriaStatus(
       asesoria.id!,
       status as any,
       message || ''
     );
+
+    // 🔔 Simulación de notificación externa (correo/WhatsApp)
+    alert(
+      `Notificación simulada enviada al usuario (${asesoria.requesterEmail}).\n\n` +
+      `Mensaje: ${message || '(sin mensaje adicional)'}`
+    );
+
     this.asesorias = await this.asesoriaService.getAsesoriasByProgrammer(this.programmerId);
   }
 }

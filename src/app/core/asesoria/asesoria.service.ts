@@ -37,6 +37,15 @@ export class AsesoriaService {
     }));
   }
 
+  async getAsesoriasByRequester(requesterId: string): Promise<Asesoria[]> {
+    const q = query(this.collectionRef(), where('requesterId', '==', requesterId));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({
+      id: d.id,
+      ...(d.data() as Asesoria)
+    }));
+  }
+
   async updateAsesoriaStatus(
     id: string,
     status: AsesoriaStatus,

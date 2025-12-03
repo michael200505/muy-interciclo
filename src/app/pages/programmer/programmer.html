@@ -7,6 +7,35 @@
   <hr>
 </div>
 
+<h2>
+  Mis Asesorías
+  <span *ngIf="pendingCount > 0" style="color:red; font-weight:bold;">
+    ({{ pendingCount }} pendientes)
+  </span>
+</h2>
+
+<div *ngFor="let a of asesorias"
+     style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+
+  <strong>{{ a.requesterName }}</strong> ({{ a.requesterEmail }})
+  <p>Fecha: {{ a.date }} - {{ a.time }}</p>
+  <p>Comentario: {{ a.comment }}</p>
+  <p><b>Estado:</b> {{ a.status }}</p>
+
+  <p *ngIf="a.responseMessage">
+    <b>Respuesta enviada:</b> {{ a.responseMessage }}
+  </p>
+
+  <button (click)="updateAsesoria(a, 'approved')" [disabled]="a.status !== 'pending'">
+    Aprobar
+  </button>
+  <button (click)="updateAsesoria(a, 'rejected')" [disabled]="a.status !== 'pending'">
+    Rechazar
+  </button>
+</div>
+
+<hr>
+
 <h2>Mis Proyectos</h2>
 
 <button (click)="goToNewProject()">Nuevo Proyecto</button>
@@ -32,23 +61,4 @@
     <br><br>
     <button (click)="deleteProject(p.id!)">Eliminar</button>
   </div>
-</div>
-
-<hr>
-
-<h2>Solicitudes de Asesoría</h2>
-
-<div *ngFor="let a of asesorias"
-     style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
-
-  <strong>{{ a.requesterName }}</strong>  
-  ({{ a.requesterEmail }})  
-
-  <p>Fecha: {{ a.date }} - {{ a.time }}</p>  
-  <p>Comentario: {{ a.comment }}</p>  
-
-  <p><b>Estado:</b> {{ a.status }}</p>
-
-  <button (click)="updateAsesoria(a, 'approved')">Aprobar</button>
-  <button (click)="updateAsesoria(a, 'rejected')">Rechazar</button>
 </div>
