@@ -2,8 +2,8 @@
   <div class="logo">Portafolios</div>
 
   <nav class="nav">
-    <a routerLink="/">Inicio</a>
-    <a routerLink="/mis-asesorias">Mis asesorías</a>
+    <a routerLink="/" routerLinkActive="active" routerLinkActiveOptions="{ exact: true }">Inicio</a>
+    <a routerLink="/mis-asesorias" routerLinkActive="active">Mis asesorías</a>
     <button class="logout-btn" (click)="logout()">Cerrar sesión</button>
   </nav>
 </header>

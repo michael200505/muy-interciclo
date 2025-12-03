@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../core/project/project.service';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
+import { HeaderComponent } from "../../ui/header/header";
+import { PageContainerComponent } from "../../ui/container/container";
 
 @Component({
   selector: 'app-project-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
   templateUrl: './project-form.html'
 })
 export class ProjectFormComponent {

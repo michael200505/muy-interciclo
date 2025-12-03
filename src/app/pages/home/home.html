@@ -1,10 +1,21 @@
-<h1>Programadores Disponibles</h1>
+<app-header></app-header>
 
-<div *ngFor="let p of programmers"
-     style="border:1px solid #ccc; padding:10px; margin-bottom:10px; cursor:pointer"
-     (click)="openPortfolio(p.uid)">
+<page-container>
+  <h1 class="page-title">Programadores disponibles</h1>
+  <p class="page-subtitle">
+    Explora los portafolios y agenda una asesoría con el programador que prefieras.
+  </p>
 
-  <img [src]="p.photoURL" width="60" style="border-radius:50%">
-  <h2>{{ p.name }}</h2>
-  <p>{{ p.specialty }}</p>
-</div>
+  <div class="card-grid">
+    <div class="card" *ngFor="let p of programmers" (click)="openPortfolio(p.uid)">
+      <img [src]="p.photoURL" alt="Foto de {{ p.name }}" class="avatar">
+      <div class="card-body">
+        <h2>{{ p.name }}</h2>
+        <p class="specialty">{{ p.specialty }}</p>
+        <p class="description">
+          {{ p.description || 'Programador disponible para asesorías.' }}
+        </p>
+      </div>
+    </div>
+  </div>
+</page-container>

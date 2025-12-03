@@ -3,25 +3,56 @@
   align-items: center;
   justify-content: space-between;
   background: #1e293b;
-  color: white;
+  color: #fff;
   padding: 10px 20px;
 }
 
 .logo {
   font-size: 1.4rem;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-.nav a, .nav button {
-  margin-left: 15px;
-  color: white;
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav a {
+  color: #e5e7eb;
   text-decoration: none;
   font-weight: 500;
-  background: none;
-  border: none;
+}
+
+.nav a.active {
+  border-bottom: 2px solid #3b82f6;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #e5e7eb;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .logout-btn:hover {
-  text-decoration: underline;
+  background: #e5e7eb;
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }

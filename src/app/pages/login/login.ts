@@ -1,12 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { UserService } from '../../core/user/user.service';
+import { PageContainerComponent } from "../../ui/container/container";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  styleUrls: ['./login.scss'],
+  imports: [PageContainerComponent]
 })
 export class LoginComponent {
 

@@ -8,11 +8,14 @@ import { Project } from '../../core/models/project.model';
 import { Asesoria } from '../../core/models/asesoria.model';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from "../../ui/header/header";
+import { ProgrammerSidebarComponent } from "../../ui/sidebar-programmer/sidebar-programmer";
+import { PageContainerComponent } from "../../ui/container/container";
 
 @Component({
   selector: 'app-programmer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent, ProgrammerSidebarComponent, PageContainerComponent],
   templateUrl: './programmer.html'
 })
 export class ProgrammerPanelComponent {

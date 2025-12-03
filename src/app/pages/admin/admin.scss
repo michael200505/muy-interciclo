@@ -1,0 +1,88 @@
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.page-title {
+    margin-bottom: 16px;
+}
+
+section {
+    margin-bottom: 24px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-card,
+.prog-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.user-role {
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.user-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+button.secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-section textarea {
+    min-height: 80px;
+}
+
+.prog-card .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .layout {
+        flex-direction: column;
+    }
+}

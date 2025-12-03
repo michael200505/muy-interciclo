@@ -4,11 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
 import { Auth } from '@angular/fire/auth';
+import { HeaderComponent } from "../../ui/header/header";
+import { PageContainerComponent } from "../../ui/container/container";
 
 @Component({
   selector: 'app-agendar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
   templateUrl: './agendar.html'
 })
 export class AgendarAsesoriaComponent {

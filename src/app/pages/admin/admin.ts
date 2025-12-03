@@ -5,11 +5,14 @@ import { UserService } from '../../core/user/user.service';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 import { AppUser } from '../../core/models/user.model';
 import { ProgrammerProfile } from '../../core/models/programmer.model';
+import { HeaderComponent } from "../../ui/header/header";
+import { AdminSidebarComponent } from "../../ui/sidebar-admin/sidebar-admin";
+import { PageContainerComponent } from "../../ui/container/container";
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule], // ✅ <-- agregar FormsModule aquí
+  imports: [CommonModule, FormsModule, HeaderComponent, AdminSidebarComponent, PageContainerComponent], // ✅ <-- agregar FormsModule aquí
   templateUrl: './admin.html'
 })
 export class AdminPanelComponent {

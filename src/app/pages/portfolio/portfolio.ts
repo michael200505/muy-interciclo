@@ -5,11 +5,13 @@ import { ProjectService } from '../../core/project/project.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgrammerProfile } from '../../core/models/programmer.model';
 import { Project } from '../../core/models/project.model';
+import { PageContainerComponent } from "../../ui/container/container";
+import { HeaderComponent } from "../../ui/header/header";
 
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PageContainerComponent, HeaderComponent],
   templateUrl: './portfolio.html'
 })
 export class PortfolioComponent {

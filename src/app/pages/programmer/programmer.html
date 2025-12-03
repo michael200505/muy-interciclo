@@ -1,64 +1,79 @@
-<h1>Panel del Programador</h1>
+<app-header></app-header>
 
-<div *ngIf="programmer">
-  <h2>{{ programmer.name }}</h2>
-  <p>{{ programmer.specialty }}</p>
-  <p>{{ programmer.description }}</p>
-  <hr>
-</div>
+<div class="layout">
+  <programmer-sidebar></programmer-sidebar>
 
-<h2>
-  Mis Asesorías
-  <span *ngIf="pendingCount > 0" style="color:red; font-weight:bold;">
-    ({{ pendingCount }} pendientes)
-  </span>
-</h2>
+  <page-container>
+    <div *ngIf="programmer" class="profile">
+      <h1>{{ programmer.name }}</h1>
+      <p class="specialty">{{ programmer.specialty }}</p>
+      <p class="description">{{ programmer.description }}</p>
+    </div>
 
-<div *ngFor="let a of asesorias"
-     style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+    <section>
+      <h2>
+        Mis asesorías
+        <span *ngIf="pendingCount > 0" class="badge-pending">
+          {{ pendingCount }} pendientes
+        </span>
+      </h2>
 
-  <strong>{{ a.requesterName }}</strong> ({{ a.requesterEmail }})
-  <p>Fecha: {{ a.date }} - {{ a.time }}</p>
-  <p>Comentario: {{ a.comment }}</p>
-  <p><b>Estado:</b> {{ a.status }}</p>
+      <div class="list">
+        <div class="asesoria-card" *ngFor="let a of asesorias">
+          <div class="asesoria-main">
+            <div class="asesoria-name">{{ a.requesterName }} ({{ a.requesterEmail }})</div>
+            <div class="asesoria-detail">
+              {{ a.date }} - {{ a.time }}
+            </div>
+            <div class="asesoria-comment">{{ a.comment }}</div>
+            <div class="asesoria-status">Estado: <b>{{ a.status }}</b></div>
+            <div *ngIf="a.responseMessage" class="asesoria-response">
+              Respuesta enviada: {{ a.responseMessage }}
+            </div>
+          </div>
 
-  <p *ngIf="a.responseMessage">
-    <b>Respuesta enviada:</b> {{ a.responseMessage }}
-  </p>
+          <div class="asesoria-actions">
+            <button (click)="updateAsesoria(a, 'approved')" [disabled]="a.status !== 'pending'">
+              Aprobar
+            </button>
+            <button class="secondary" (click)="updateAsesoria(a, 'rejected')" [disabled]="a.status !== 'pending'">
+              Rechazar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <button (click)="updateAsesoria(a, 'approved')" [disabled]="a.status !== 'pending'">
-    Aprobar
-  </button>
-  <button (click)="updateAsesoria(a, 'rejected')" [disabled]="a.status !== 'pending'">
-    Rechazar
-  </button>
-</div>
+    <section>
+      <h2>Mis proyectos</h2>
+      <button (click)="goToNewProject()">Nuevo proyecto</button>
 
-<hr>
+      <div class="filter">
+        <label>Filtrar por categoría:</label>
+        <select [(ngModel)]="categoryFilter">
+          <option value="all">Todos</option>
+          <option value="academic">Académicos</option>
+          <option value="work">Laborales</option>
+        </select>
+      </div>
 
-<h2>Mis Proyectos</h2>
+      <div class="list">
+        <div class="project-card" *ngFor="let p of projects">
+          <ng-container *ngIf="categoryFilter === 'all' || categoryFilter === p.category">
+            <h3>{{ p.name }} ({{ p.category }})</h3>
+            <p>{{ p.description }}</p>
+            <p><b>Tipo:</b> {{ p.participation }}</p>
+            <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
 
-<button (click)="goToNewProject()">Nuevo Proyecto</button>
+            <div class="links">
+              <a *ngIf="p.repoUrl" [href]="p.repoUrl" target="_blank">Repositorio</a>
+              <a *ngIf="p.demoUrl" [href]="p.demoUrl" target="_blank">Demo</a>
+            </div>
 
-<select [(ngModel)]="categoryFilter">
-  <option value="all">Todos</option>
-  <option value="academic">Académicos</option>
-  <option value="work">Laborales</option>
-</select>
-
-<div *ngFor="let p of projects">
-  <div *ngIf="categoryFilter === 'all' || categoryFilter === p.category"
-       style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-    
-    <h3>{{ p.name }} ({{ p.category }})</h3>
-    <p>{{ p.description }}</p>
-    <p><b>Tipo:</b> {{ p.participation }}</p>
-    <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
-
-    <a *ngIf="p.repoUrl" [href]="p.repoUrl" target="_blank">Repositorio</a> |
-    <a *ngIf="p.demoUrl" [href]="p.demoUrl" target="_blank">Demo</a>
-
-    <br><br>
-    <button (click)="deleteProject(p.id!)">Eliminar</button>
-  </div>
+            <button class="danger" (click)="deleteProject(p.id!)">Eliminar</button>
+          </ng-container>
+        </div>
+      </div>
+    </section>
+  </page-container>
 </div>

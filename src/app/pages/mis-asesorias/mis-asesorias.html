@@ -1,20 +1,20 @@
-<h1>Mis Asesorías</h1>
+<app-header></app-header>
 
-<div *ngFor="let a of asesorias"
-     style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+<page-container>
+  <h1>Mis asesorías</h1>
 
-  <p><b>Programador:</b> {{ a.programmerId }}</p> <!-- podrías mostrar el nombre si lo buscas -->
-  <p><b>Fecha:</b> {{ a.date }} - {{ a.time }}</p>
-  <p><b>Comentario enviado:</b> {{ a.comment }}</p>
-  <p><b>Estado:</b> {{ a.status }}</p>
+  <div class="list">
+    <div class="asesoria-card" *ngFor="let a of asesorias">
+      <div class="asesoria-main">
+        <p><b>Programador:</b> {{ a.programmerId }}</p>
+        <p><b>Fecha:</b> {{ a.date }} - {{ a.time }}</p>
+        <p><b>Comentario enviado:</b> {{ a.comment }}</p>
+        <p><b>Estado:</b> {{ a.status }}</p>
 
-  <p *ngIf="a.responseMessage">
-    <b>Respuesta del programador:</b> {{ a.responseMessage }}
-  </p>
-
-  <button
-    *ngIf="a.responseMessage"
-    (click)="window.open('mailto:' + a.requesterEmail + '?subject=Respuesta asesoría&body=' + a.responseMessage, '_blank')">
-    Simular correo
-  </button>
-</div>
+        <p *ngIf="a.responseMessage">
+          <b>Respuesta del programador:</b> {{ a.responseMessage }}
+        </p>
+      </div>
+    </div>
+  </div>
+</page-container>

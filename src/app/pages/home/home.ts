@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 import { ProgrammerProfile } from '../../core/models/programmer.model';
 import { Router } from '@angular/router';
+import { HeaderComponent } from "../../ui/header/header";
+import { PageContainerComponent } from "../../ui/container/container";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HeaderComponent, PageContainerComponent],
   templateUrl: './home.html'
 })
 export class PublicHomeComponent {

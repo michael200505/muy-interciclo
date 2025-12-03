@@ -1,42 +1,62 @@
-<h1>Panel de Administrador</h1>
+<app-header></app-header>
 
-<h2>Usuarios Registrados</h2>
+<div class="layout">
+  <admin-sidebar></admin-sidebar>
 
-<div *ngFor="let user of users" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
-  <strong>{{ user.displayName }}</strong> ({{ user.email }})
-  <br>
-  Rol actual: <b>{{ user.role }}</b>
-  <br><br>
+  <page-container>
+    <h1 class="page-title">Panel de administrador</h1>
 
-  <button (click)="selectUser(user)">Convertir a Programador</button>
-  <button (click)="makeAdmin(user)">Asignar Administrador</button>
-</div>
+    <section>
+      <h2>Usuarios registrados</h2>
 
-<hr>
+      <div class="list">
+        <div class="user-card" *ngFor="let user of users">
+          <div class="user-main">
+            <div class="user-info">
+              <div class="user-name">{{ user.displayName }}</div>
+              <div class="user-email">{{ user.email }}</div>
+            </div>
+            <div class="user-role">Rol: <b>{{ user.role }}</b></div>
+          </div>
 
-<h2>Crear Perfil de Programador</h2>
+          <div class="user-actions">
+            <button (click)="selectUser(user)">Convertir a programador</button>
+            <button class="secondary" (click)="makeAdmin(user)">Asignar administrador</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<div *ngIf="selectedUser">
-  <p>Creando perfil para: <b>{{ selectedUser.displayName }}</b></p>
+    <section *ngIf="selectedUser" class="form-section">
+      <h2>Crear perfil de programador</h2>
+      <p>Usuario seleccionado: <b>{{ selectedUser.displayName }}</b></p>
 
-  <label>Nombre:</label>
-  <input type="text" [(ngModel)]="newProgrammer.name">
+      <form (ngSubmit)="makeProgrammer()">
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="newProgrammer.name" name="name">
 
-  <label>Especialidad:</label>
-  <input type="text" [(ngModel)]="newProgrammer.specialty">
+        <label>Especialidad</label>
+        <input type="text" [(ngModel)]="newProgrammer.specialty" name="specialty">
 
-  <label>Descripción:</label>
-  <textarea [(ngModel)]="newProgrammer.description"></textarea>
+        <label>Descripción</label>
+        <textarea [(ngModel)]="newProgrammer.description" name="description"></textarea>
 
-  <button (click)="makeProgrammer()">Guardar Programador</button>
-</div>
+        <button type="submit">Guardar programador</button>
+      </form>
+    </section>
 
-<hr>
+    <section>
+      <h2>Programadores registrados</h2>
 
-<h2>Programadores Registrados</h2>
-
-<div *ngFor="let prog of programmers" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
-  <img [src]="prog.photoURL" width="50">
-  <h3>{{ prog.name }}</h3>
-  <p>{{ prog.specialty }}</p>
+      <div class="list">
+        <div class="prog-card" *ngFor="let prog of programmers">
+          <img [src]="prog.photoURL" alt="Foto de {{ prog.name }}" class="avatar">
+          <div>
+            <div class="user-name">{{ prog.name }}</div>
+            <div class="user-email">{{ prog.specialty }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </page-container>
 </div>

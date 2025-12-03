@@ -1,0 +1,118 @@
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.profile {
+    margin-bottom: 20px;
+}
+
+.profile .specialty {
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.profile .description {
+    color: #6b7280;
+}
+
+.badge-pending {
+    margin-left: 8px;
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.asesoria-card,
+.project-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.asesoria-main {
+    max-width: 500px;
+}
+
+.asesoria-name {
+    font-weight: 600;
+}
+
+.asesoria-detail {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.asesoria-comment {
+    margin-top: 4px;
+}
+
+.asesoria-status {
+    margin-top: 4px;
+}
+
+.asesoria-response {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.asesoria-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter {
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.links {
+    display: flex;
+    gap: 10px;
+    margin: 6px 0;
+}
+
+.links a {
+    font-size: 0.9rem;
+}
+
+button.secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+button.danger {
+    background: #ef4444;
+}
+
+button.danger:hover {
+    background: #b91c1c;
+}
+
+@media (max-width: 768px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .asesoria-card,
+    .project-card {
+        flex-direction: column;
+    }
+}

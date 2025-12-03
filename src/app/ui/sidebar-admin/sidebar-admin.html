@@ -1,5 +1,12 @@
 <aside class="sidebar">
-  <a routerLink="/admin">Panel Admin</a>
-  <a routerLink="/admin/programmers">Programadores</a>
-  <a routerLink="/">Vista Pública</a>
+  <div class="sidebar-title">Administrador</div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/admin" routerLinkActive="active" routerLinkActiveOptions="{ exact: true }">
+      Panel principal
+    </a>
+    <a routerLink="/" routerLinkActive="active">
+      Vista pública
+    </a>
+  </nav>
 </aside>
