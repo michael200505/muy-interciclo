@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { getDoc } from '@angular/fire/firestore';
+
 import {
   Firestore,
   collection,
@@ -10,7 +12,6 @@ import {
   setDoc
 } from '@angular/fire/firestore';
 import { ProgrammerProfile } from '../models/programmer.model';
-import { getDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'

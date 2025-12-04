@@ -1,51 +1,59 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProjectService } from '../../core/project/project.service';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { HeaderComponent } from "../../ui/header/header";
-import { PageContainerComponent } from "../../ui/container/container";
+
+import { ProjectsService } from '../../core/project/project.service';
+import { PageContainerComponent } from '../../ui/container/container';
+import { HeaderComponent } from '../../ui/header/header';
 
 @Component({
   selector: 'app-project-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
-  templateUrl: './project-form.html'
+  imports: [
+    CommonModule,
+    FormsModule,
+    PageContainerComponent,
+    HeaderComponent
+  ],
+  templateUrl: './project-form.html',
+  styleUrls: ['./project-form.scss']
 })
 export class ProjectFormComponent {
 
-  private projectService = inject(ProjectService);
   private auth = inject(Auth);
+  private projectsService = inject(ProjectsService);
   private router = inject(Router);
 
+  // AHORA COINCIDE EXACTAMENTE CON EL MODELO Project
   project = {
-    name: '',
+    title: '',
     description: '',
-    category: 'academic',
-    participation: 'frontend',
+    type: 'academic' as 'academic' | 'professional',
+    role: 'frontend' as 'frontend' | 'backend' | 'fullstack' | 'database',
     technologies: '',
-    repoUrl: '',
-    demoUrl: ''
+    repoURL: '',
+    demoURL: ''
   };
 
   async save() {
     const user = this.auth.currentUser;
     if (!user) return;
 
-    await this.projectService.addProject({
-      programmerId: user.uid,
-      name: this.project.name,
+    await this.projectsService.createProject({
+      uid: user.uid,
+      title: this.project.title,
       description: this.project.description,
-      category: this.project.category as any,
-      participation: this.project.participation as any,
+      type: this.project.type,
+      role: this.project.role,
       technologies: this.project.technologies.split(',').map(t => t.trim()),
-      repoUrl: this.project.repoUrl,
-      demoUrl: this.project.demoUrl,
+      repoURL: this.project.repoURL,
+      demoURL: this.project.demoURL,
       createdAt: Date.now()
     });
 
-    alert("Proyecto guardado");
+    alert('Proyecto creado con éxito');
     this.router.navigate(['/programmer']);
   }
 }

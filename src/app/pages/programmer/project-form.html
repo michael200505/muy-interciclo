@@ -1,38 +1,40 @@
 <app-header></app-header>
 
 <page-container>
-  <h1>Nuevo proyecto</h1>
+  <h2>Nuevo Proyecto</h2>
 
   <form (ngSubmit)="save()" class="form">
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="project.name" name="name" required>
+
+    <label>Título</label>
+    <input type="text" [(ngModel)]="project.title" name="title" required>
 
     <label>Descripción</label>
     <textarea [(ngModel)]="project.description" name="description" required></textarea>
 
-    <label>Categoría</label>
-    <select [(ngModel)]="project.category" name="category">
+    <label>Tipo</label>
+    <select [(ngModel)]="project.type" name="type">
       <option value="academic">Académico</option>
-      <option value="work">Laboral</option>
+      <option value="professional">Profesional</option>
     </select>
 
-    <label>Participación</label>
-    <select [(ngModel)]="project.participation" name="participation">
+    <label>Rol</label>
+    <select [(ngModel)]="project.role" name="role">
       <option value="frontend">Frontend</option>
       <option value="backend">Backend</option>
-      <option value="database">Base de datos</option>
       <option value="fullstack">Fullstack</option>
+      <option value="database">Base de Datos</option>
     </select>
 
     <label>Tecnologías (separadas por coma)</label>
     <input type="text" [(ngModel)]="project.technologies" name="technologies">
 
-    <label>Repositorio (URL)</label>
-    <input type="url" [(ngModel)]="project.repoUrl" name="repoUrl">
+    <label>URL del Repositorio</label>
+    <input type="url" [(ngModel)]="project.repoURL" name="repoURL">
 
-    <label>Demo (URL)</label>
-    <input type="url" [(ngModel)]="project.demoUrl" name="demoUrl">
+    <label>URL de la Demo</label>
+    <input type="url" [(ngModel)]="project.demoURL" name="demoURL">
 
-    <button type="submit">Guardar proyecto</button>
+    <button type="submit">Guardar Proyecto</button>
+
   </form>
 </page-container>

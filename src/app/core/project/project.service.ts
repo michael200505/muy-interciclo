@@ -7,6 +7,7 @@ import {
   query,
   where,
   doc,
+  setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
 import { Project } from '../models/project.model';
@@ -14,29 +15,31 @@ import { Project } from '../models/project.model';
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectService {
+export class ProjectsService {
 
   constructor(private firestore: Firestore) {}
 
-  private collectionRef() {
+  private projectsCol() {
     return collection(this.firestore, 'projects');
   }
 
-  async addProject(project: Project): Promise<void> {
+  async createProject(project: Project) {
     project.createdAt = Date.now();
-    await addDoc(this.collectionRef(), project as any);
+    await addDoc(this.projectsCol(), project);
   }
 
-  async getProjectsByProgrammer(programmerId: string): Promise<Project[]> {
-    const q = query(this.collectionRef(), where('programmerId', '==', programmerId));
+  async getProjectsByUser(uid: string): Promise<Project[]> {
+    const q = query(this.projectsCol(), where('uid', '==', uid));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({
-      id: d.id,
-      ...(d.data() as Project)
-    }));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() as Project }));
   }
 
-  async deleteProject(id: string): Promise<void> {
+  async updateProject(id: string, data: Partial<Project>) {
+    const ref = doc(this.firestore, 'projects', id);
+    await setDoc(ref, data, { merge: true });
+  }
+
+  async deleteProject(id: string) {
     const ref = doc(this.firestore, 'projects', id);
     await deleteDoc(ref);
   }

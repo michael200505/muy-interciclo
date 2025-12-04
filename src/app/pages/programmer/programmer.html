@@ -1,79 +1,37 @@
-<app-header></app-header>
+<page-container>
 
-<div class="layout">
-  <programmer-sidebar></programmer-sidebar>
+  <div class="programmer-layout">
 
-  <page-container>
-    <div *ngIf="programmer" class="profile">
-      <h1>{{ programmer.name }}</h1>
-      <p class="specialty">{{ programmer.specialty }}</p>
-      <p class="description">{{ programmer.description }}</p>
-    </div>
+    <programmer-sidebar></programmer-sidebar>
 
-    <section>
-      <h2>
-        Mis asesorías
-        <span *ngIf="pendingCount > 0" class="badge-pending">
-          {{ pendingCount }} pendientes
-        </span>
-      </h2>
+    <div class="content">
 
-      <div class="list">
-        <div class="asesoria-card" *ngFor="let a of asesorias">
-          <div class="asesoria-main">
-            <div class="asesoria-name">{{ a.requesterName }} ({{ a.requesterEmail }})</div>
-            <div class="asesoria-detail">
-              {{ a.date }} - {{ a.time }}
-            </div>
-            <div class="asesoria-comment">{{ a.comment }}</div>
-            <div class="asesoria-status">Estado: <b>{{ a.status }}</b></div>
-            <div *ngIf="a.responseMessage" class="asesoria-response">
-              Respuesta enviada: {{ a.responseMessage }}
-            </div>
-          </div>
+      <section class="profile-box" *ngIf="profile">
+        <img [src]="profile.photoURL" class="avatar">
+        <h2>{{ profile.name }}</h2>
+        <h4>{{ profile.specialty }}</h4>
+        <p>{{ profile.description }}</p>
+      </section>
 
-          <div class="asesoria-actions">
-            <button (click)="updateAsesoria(a, 'approved')" [disabled]="a.status !== 'pending'">
-              Aprobar
-            </button>
-            <button class="secondary" (click)="updateAsesoria(a, 'rejected')" [disabled]="a.status !== 'pending'">
-              Rechazar
-            </button>
-          </div>
+      <section class="projects">
+        <div class="header">
+          <h3>Mis Proyectos</h3>
+          <a class="new-btn" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
         </div>
-      </div>
-    </section>
 
-    <section>
-      <h2>Mis proyectos</h2>
-      <button (click)="goToNewProject()">Nuevo proyecto</button>
-
-      <div class="filter">
-        <label>Filtrar por categoría:</label>
-        <select [(ngModel)]="categoryFilter">
-          <option value="all">Todos</option>
-          <option value="academic">Académicos</option>
-          <option value="work">Laborales</option>
-        </select>
-      </div>
-
-      <div class="list">
         <div class="project-card" *ngFor="let p of projects">
-          <ng-container *ngIf="categoryFilter === 'all' || categoryFilter === p.category">
-            <h3>{{ p.name }} ({{ p.category }})</h3>
-            <p>{{ p.description }}</p>
-            <p><b>Tipo:</b> {{ p.participation }}</p>
-            <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+          <h4>{{ p.title }}</h4>
+          <p>{{ p.description }}</p>
+          <small>Rol: {{ p.role }} – Tipo: {{ p.type }}</small>
 
-            <div class="links">
-              <a *ngIf="p.repoUrl" [href]="p.repoUrl" target="_blank">Repositorio</a>
-              <a *ngIf="p.demoUrl" [href]="p.demoUrl" target="_blank">Demo</a>
-            </div>
-
-            <button class="danger" (click)="deleteProject(p.id!)">Eliminar</button>
-          </ng-container>
+          <div class="actions">
+            <a [href]="p.repoURL" target="_blank">Repositorio</a>
+            <a [href]="p.demoURL" target="_blank">Demo</a>
+          </div>
         </div>
-      </div>
-    </section>
-  </page-container>
-</div>
+      </section>
+
+    </div>
+  </div>
+
+</page-container>

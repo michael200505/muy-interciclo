@@ -1,15 +1,12 @@
-export type ProjectCategory = 'academic' | 'work';
-export type ParticipationType = 'frontend' | 'backend' | 'database' | 'fullstack';
-
 export interface Project {
   id?: string;
-  programmerId: string;           // uid del programador
-  name: string;
+  uid: string;  // programador dueño del proyecto
+  title: string;
   description: string;
-  category: ProjectCategory;      // academic / work
-  participation: ParticipationType;
+  type: 'academic' | 'professional';
+  role: 'frontend' | 'backend' | 'fullstack' | 'database';
   technologies: string[];
-  repoUrl?: string;
-  demoUrl?: string;
+  repoURL: string;
+  demoURL: string;
   createdAt: number;
 }

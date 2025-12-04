@@ -1,126 +1,22 @@
-/* Sidebar (Programador) */
 .sidebar {
-  /* Layout */
-  position: sticky;
-  top: 0;
-  align-self: start;
-  height: 100vh;
-  width: 280px;
+  width: 220px;
+  background: #1a1a1a;
+  color: white;
+  height: 100%;
+  padding: 20px;
+  border-radius: 10px;
 
-  /* Visual */
-  background: #0f172a; // slate-900
-  color: #e2e8f0;      // slate-200
-  border-right: 1px solid rgba(148, 163, 184, 0.18);
-  padding: 18px 14px;
+  ul {
+    list-style: none;
+    padding: 0;
 
-  /* Typography */
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-}
+    li {
+      margin-bottom: 15px;
 
-.sidebar-title {
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #94a3b8; // slate-400
-  padding: 10px 12px;
-  margin-bottom: 10px;
-
-  /* Subtle separation for scanability */
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 4px;
-
-  a {
-    /* Click target */
-    display: flex;
-    align-items: center;
-    min-height: 44px;           // heurística: tamaño objetivo táctil
-    padding: 10px 12px;
-    border-radius: 12px;
-
-    /* Text */
-    color: #e2e8f0;
-    text-decoration: none;
-    font-size: 0.98rem;
-    line-height: 1.2;
-
-    /* Feedback */
-    background: transparent;
-    transition: background 160ms ease, transform 160ms ease, color 160ms ease;
-
-    &:hover {
-      background: rgba(148, 163, 184, 0.12);
-      transform: translateX(2px);
-    }
-
-    /* Accesibilidad: foco visible (teclado) */
-    &:focus-visible {
-      outline: 2px solid #38bdf8; // sky-400
-      outline-offset: 2px;
-      background: rgba(56, 189, 248, 0.12);
-    }
-
-    /* Estado activo (routerLinkActive="active") */
-    &.active {
-      background: rgba(56, 189, 248, 0.18);
-      color: #e0f2fe; // sky-100
-      position: relative;
-
-      /* Indicador lateral: visibilidad del estado del sistema */
-      &::before {
-        content: "";
-        position: absolute;
-        left: -6px;
-        top: 10px;
-        bottom: 10px;
-        width: 4px;
-        border-radius: 999px;
-        background: #38bdf8;
-      }
-    }
-
-    /* Reduce motion (heurística: flexibilidad y comodidad) */
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-
-      &:hover {
-        transform: none;
-      }
-    }
-  }
-}
-
-/* Responsive: sidebar se vuelve horizontal o compacta */
-@media (max-width: 860px) {
-  .sidebar {
-    height: auto;
-    width: 100%;
-    position: relative;
-    border-right: none;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-  }
-
-  .sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    a {
-      min-height: 40px;
-      padding: 10px 12px;
-
-      &.active::before {
-        left: 10px;
-        right: 10px;
-        top: auto;
-        bottom: 6px;
-        height: 3px;
-        width: auto;
+      a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
       }
     }
   }
