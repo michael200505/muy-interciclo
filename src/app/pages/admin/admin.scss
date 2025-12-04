@@ -104,3 +104,28 @@ input, textarea {
 textarea {
   resize: none;
 }
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.edit {
+  background: #ffc107;
+  color: #333;
+}
+
+.edit:hover {
+  background: #e0a800;
+}
+
+.delete {
+  background: #dc3545;
+  color: white;
+}
+
+.delete:hover {
+  background: #b02a37;
+}
+
