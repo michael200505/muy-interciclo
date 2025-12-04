@@ -12,27 +12,34 @@ import { PageContainerComponent } from '../../ui/container/container';
   imports: [PageContainerComponent]
 })
 export class LoginComponent {
-
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private router = inject(Router);
 
-  login() {
-    console.log("Iniciando login...");
+  async login() {
+  console.log("Iniciando login...");
+  this.authService.loginWithGoogle()
+    .then(async cred => {
+      console.log("Login OK:", cred.user);
 
-    this.authService.loginWithGoogle()
-      .then(async cred => {
-        console.log("Login OK:", cred.user);
+      // Guardar sin perder rol existente
+      await this.userService.saveUser(cred.user);
 
-        try {
-          await this.userService.saveUser(cred.user);
-          console.log("Usuario guardado correctamente ✔");
-        } catch (err) {
-          console.error("Error al guardar usuario:", err);
-        }
+      // Recuperar el usuario con su rol REAL
+      const dbUser = await this.userService.getUser(cred.user.uid);
+      console.log("Usuario en BD:", dbUser);
 
+      // REDIRECCIÓN SEGÚN ROL
+      if (dbUser?.role === 'admin') {
+        this.router.navigate(['/admin']);
+      }
+      else if (dbUser?.role === 'programmer') {
+        this.router.navigate(['/programmer']);
+      }
+      else {
         this.router.navigate(['/']);
-      })
-      .catch(err => console.error("Error en login:", err));
-  }
+      }
+    })
+    .catch(err => console.error("Error en login:", err));
+}
 }

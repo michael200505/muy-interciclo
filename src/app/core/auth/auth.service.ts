@@ -1,30 +1,44 @@
-import { Injectable } from '@angular/core';
-import { Auth, GoogleAuthProvider, signInWithPopup, signOut } from '@angular/fire/auth';
+import { Injectable, inject } from '@angular/core';
+import {
+  Auth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  user
+} from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  provider = new GoogleAuthProvider();
+  private auth = inject(Auth);
+  private provider = new GoogleAuthProvider();
 
-  constructor(private auth: Auth) {
-    this.provider.setCustomParameters({
-      prompt: 'select_account'
-    });
-  }
-
-  //  Fuerza a Firebase a mostrar siempre la selección de cuenta
+  /**
+   * Login con Google dentro del contexto AngularFire
+   */
   async loginWithGoogle() {
-    await signOut(this.auth); // Muy importante
-    return await signInWithPopup(this.auth, this.provider);
+    console.log("✨ Iniciando login con Google...");
+
+    const result = await signInWithPopup(this.auth, this.provider);
+
+    console.log("✅ Login correcto!", result);
+
+    return result;
   }
 
-  logout() {
-    return signOut(this.auth);
+  /**
+   * Observa al usuario autenticado en tiempo real
+   */
+  get currentUser$() {
+    return user(this.auth);
   }
 
-  getCurrentUser() {
-    return this.auth.currentUser;
+  /**
+   * Cerrar sesión
+   */
+  async logout() {
+    await signOut(this.auth);
   }
 }
