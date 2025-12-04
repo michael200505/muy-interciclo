@@ -1,12 +1,135 @@
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Mis asesorías — SCSS
+   Enfoque (heurísticas de usabilidad): claridad visual, jerarquía, consistencia,
+   estados visibles, buena legibilidad, y feedback (hover/focus), accesible. */
+
+:host {
+  /* Design tokens */
+  --bg: #0b1220;
+  --surface: #0f1b33;
+  --surface-2: #122244;
+  --border: rgba(255, 255, 255, 0.10);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.72);
+
+  --primary: #4f8cff;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
+
+  --radius: 16px;
+  --radius-sm: 12px;
+
+  display: block;
+  color: var(--text);
 }
 
+/* Contenedor de página */
+page-container {
+  display: block;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 28px);
+
+  /* Titular: jerarquía + escaneabilidad */
+  h1 {
+    margin: 6px 0 18px;
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Lista: layout flexible y consistente */
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+/* Card: agrupación clara, borde, sombra, micro-interacciones */
 .asesoria-card {
-  background: #ffffff;
-  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+
+  /* Feedback (estado del sistema): hover/focus */
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(79, 140, 255, 0.35);
+    background: linear-gradient(180deg, rgba(79, 140, 255, 0.12), rgba(255, 255, 255, 0.03));
+  }
+
+  /* Accesibilidad: si en algún momento la card es clickable (routerLink, button, etc.) */
+  &:focus-within {
+    outline: 2px solid rgba(79, 140, 255, 0.55);
+    outline-offset: 2px;
+  }
+}
+
+/* Contenido: espaciado y tipografía para lectura rápida */
+.asesoria-main {
+  padding: 16px 16px 14px;
+
+  p {
+    margin: 0;
+    padding: 8px 0;
+    color: var(--muted);
+    line-height: 1.45;
+
+    /* Separación sutil para escaneabilidad sin ruido */
+    & + p {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    b {
+      color: var(--text);
+      font-weight: 650;
+      letter-spacing: 0.01em;
+    }
+  }
+
+  /* Respuesta del programador: darle énfasis y “feedback” */
+  p:has(b:contains("Respuesta")) {
+    /* Nota: :has y :contains no están soportados de forma universal.
+       Por eso, también dejo un fallback abajo usando el *ngIf en el HTML:
+       si puedes agregar una clase, mejor (ver nota final). */
+  }
+}
+
+/* Fallback sin :has / :contains: estiliza el último párrafo si suele ser la respuesta */
+.asesoria-main p:last-child {
+  /* Si no hay respuesta, no pasa nada. Si hay, se ve como bloque destacado. */
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  margin-top: 10px;
+
+  b {
+    color: var(--primary);
+  }
+}
+
+/* Responsive: más aire en desktop; cards con mejor ritmo */
+@media (min-width: 900px) {
+  .list {
+    gap: 14px;
+  }
+
+  .asesoria-main {
+    padding: 18px 18px 16px;
+
+    p {
+      padding: 9px 0;
+    }
+  }
+}
+
+/* Preferencias del usuario: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .asesoria-card {
+    transition: none;
+  }
 }

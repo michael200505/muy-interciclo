@@ -1,9 +1,135 @@
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+// ✅ Comentario: Estilos para la pantalla "Nuevo proyecto" (contenedor tipo card + formulario accesible y responsive)
+
+:host {
+  --bg: #0b1220;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: rgba(255, 255, 255, 0.92);
+  --shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
+  --radius: 16px;
+  --primary: #4f8cff;
+
+  display: block;
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(79, 140, 255, 0.22), transparent 40%),
+    radial-gradient(900px 500px at 80% 10%, rgba(54, 211, 153, 0.12), transparent 45%),
+    var(--bg);
+  min-height: 100vh;
 }
 
-.form textarea {
-  min-height: 100px;
+page-container {
+  display: block;
+  max-width: 920px;
+  margin: 18px auto;
+  padding: 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 60%);
+
+  h1 {
+    margin: 0 0 14px;
+    font-size: 1.7rem;
+    line-height: 1.15;
+  }
+
+  @media (max-width: 960px) {
+    margin: 14px;
+  }
+
+  @media (max-width: 640px) {
+    padding: 14px;
+    border-radius: 14px;
+  }
+}
+
+.form {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+
+  label {
+    font-weight: 750;
+    margin-top: 2px;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.22);
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 120ms ease, filter 120ms ease;
+
+    &:focus-visible {
+      outline: 3px solid rgba(79, 140, 255, 0.35);
+      outline-offset: 2px;
+      border-color: rgba(79, 140, 255, 0.55);
+      filter: brightness(1.05);
+    }
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  select {
+    appearance: none;
+    padding-right: 40px;
+  }
+
+  input.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched,
+  select.ng-invalid.ng-touched {
+    border-color: rgba(255, 77, 79, 0.65);
+    box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.18);
+  }
+
+  button[type="submit"] {
+    margin-top: 6px;
+    border: 1px solid rgba(79, 140, 255, 0.35);
+    background: linear-gradient(180deg, rgba(79, 140, 255, 0.18), rgba(0, 0, 0, 0.12));
+    color: rgba(255, 255, 255, 0.92);
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 120ms ease, filter 120ms ease, border-color 120ms ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22);
+
+    &:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      border-color: rgba(79, 140, 255, 0.55);
+    }
+
+    &:active {
+      transform: translateY(0px);
+      filter: brightness(0.98);
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba(79, 140, 255, 0.35);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 640px) {
+      width: 100%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }

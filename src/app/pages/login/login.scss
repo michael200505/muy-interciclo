@@ -1,24 +1,146 @@
+:host,
+page-container {
+  /* Base */
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b1220 0%, #0f1b33 60%, #0b1220 100%);
+  color: #eaf0ff;
+
+  /* Tipografía y rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .login-wrapper {
-    display: flex;
-    min-height: 100vh;
-    align-items: center;
-    justify-content: center;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 40px);
 }
 
 .login-card {
-    background: #ffffff;
-    padding: 24px 28px;
-    border-radius: 10px;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
-    max-width: 360px;
-    text-align: center;
+  width: min(520px, 100%);
+  padding: clamp(20px, 4vw, 36px);
+  border-radius: 20px;
+
+  /* Jerarquía visual + estética minimalista */
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+
+  /* Legibilidad */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* Estructura clara */
+  display: grid;
+  gap: 12px;
+
+  h1 {
+    margin: 0;
+    font-size: clamp(22px, 2.4vw, 30px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+
+    /* Reconocimiento > recuerdo */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  p {
+    margin: 0 0 6px 0;
+    color: rgba(234, 240, 255, 0.82);
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  button {
+    /* Consistencia + affordance */
+    appearance: none;
+    border: 0;
+    width: 100%;
+    cursor: pointer;
+
+    /* Tamaño objetivo táctil */
+    min-height: 48px;
+    padding: 12px 16px;
+
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+
+    /* Estilo primario */
+    background: linear-gradient(180deg, #ffffff 0%, #e9efff 100%);
+    color: #0b1220;
+
+    box-shadow:
+      0 14px 30px rgba(45, 96, 255, 0.22),
+      0 1px 0 rgba(255, 255, 255, 0.65) inset;
+
+    transition:
+      transform 120ms ease,
+      box-shadow 160ms ease,
+      filter 160ms ease,
+      background 160ms ease;
+
+    /* “Visibilidad del estado del sistema”: hover/active/focus */
+    &:hover {
+      filter: brightness(1.02);
+      box-shadow:
+        0 18px 40px rgba(45, 96, 255, 0.28),
+        0 1px 0 rgba(255, 255, 255, 0.7) inset;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0px) scale(0.99);
+      box-shadow:
+        0 10px 26px rgba(45, 96, 255, 0.2),
+        0 1px 0 rgba(255, 255, 255, 0.55) inset;
+    }
+
+    &:focus-visible {
+      outline: none; /* lo reemplazamos por un focus ring visible */
+      box-shadow:
+        0 0 0 4px rgba(45, 96, 255, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+        0 18px 40px rgba(45, 96, 255, 0.24);
+    }
+
+    &:disabled {
+      /* Prevención de errores */
+      cursor: not-allowed;
+      opacity: 0.6;
+      filter: grayscale(0.2);
+      transform: none;
+      box-shadow: none;
+    }
+  }
 }
 
-.login-card h1 {
-    margin-bottom: 10px;
+/* Responsivo */
+@media (max-width: 420px) {
+  .login-card {
+    border-radius: 16px;
+    gap: 10px;
+
+    p {
+      font-size: 0.95rem;
+    }
+
+    button {
+      border-radius: 12px;
+    }
+  }
 }
 
-.login-card p {
-    margin-bottom: 16px;
-    color: #6b7280;
+/* Accesibilidad: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .login-card button {
+    transition: none;
+  }
 }
