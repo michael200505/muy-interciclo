@@ -7,51 +7,33 @@ import {
   query,
   where,
   doc,
-  updateDoc
+  setDoc
 } from '@angular/fire/firestore';
-import { Asesoria, AsesoriaStatus } from '../models/asesoria.model';
+import { Asesoria } from '../models/asesoria.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AsesoriaService {
+export class AsesoriasService {
 
   constructor(private firestore: Firestore) {}
 
-  private collectionRef() {
+  private col() {
     return collection(this.firestore, 'asesorias');
   }
 
-  async requestAsesoria(data: Asesoria): Promise<void> {
-    data.createdAt = Date.now();
-    data.status = 'pending';
-    await addDoc(this.collectionRef(), data as any);
+  async create(asesoria: Asesoria) {
+    await addDoc(this.col(), asesoria);
   }
 
-  async getAsesoriasByProgrammer(programmerId: string): Promise<Asesoria[]> {
-    const q = query(this.collectionRef(), where('programmerId', '==', programmerId));
+  async getByProgrammer(uid: string): Promise<Asesoria[]> {
+    const q = query(this.col(), where('programmerId', '==', uid));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({
-      id: d.id,
-      ...(d.data() as Asesoria)
-    }));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() as Asesoria }));
   }
 
-  async getAsesoriasByRequester(requesterId: string): Promise<Asesoria[]> {
-    const q = query(this.collectionRef(), where('requesterId', '==', requesterId));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({
-      id: d.id,
-      ...(d.data() as Asesoria)
-    }));
-  }
-
-  async updateAsesoriaStatus(
-    id: string,
-    status: AsesoriaStatus,
-    responseMessage?: string
-  ): Promise<void> {
+  async update(id: string, data: Partial<Asesoria>) {
     const ref = doc(this.firestore, 'asesorias', id);
-    await updateDoc(ref, { status, responseMessage });
+    await setDoc(ref, data, { merge: true });
   }
 }

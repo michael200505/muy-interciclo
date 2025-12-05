@@ -7,45 +7,37 @@ import {
   collection,
   getDocs
 } from '@angular/fire/firestore';
-
-export interface AppUser {
-  uid: string;
-  email: string;
-  displayName: string;
-  photoURL: string;
-  role: string;
-}
+import { AppUser, UserRole } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private firestore: Firestore) {}
+
+  constructor(private firestore: Firestore) { }
 
   /**
-   * Guarda/actualiza el usuario en Firestore sin sobrescribir el rol existente.
-   * - Si el usuario NO existe: role = 'user'
-   * - Si el usuario YA existe: NO toca el role
+   * Guarda el usuario en Firestore sin sobrescribir el rol existente.
    */
   async saveUser(user: any): Promise<void> {
     const ref = doc(this.firestore, 'users', user.uid);
-    const snap = await getDoc(ref);
 
-    const baseData = {
+    // ¿Ya existe en Firestore?
+    const snap = await getDoc(ref);
+    const existing = snap.exists() ? (snap.data() as AppUser) : null;
+
+    // Si ya tenía rol, lo respetamos; si no, 'user'
+    const role: UserRole = existing?.role ?? 'user';
+
+    const data: AppUser = {
       uid: user.uid,
-      email: user.email ?? '',
-      displayName: user.displayName ?? '',
-      photoURL: user.photoURL ?? ''
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      role
     };
 
-    if (snap.exists()) {
-      // Ya existe: actualizar datos sin enviar "role"
-      await setDoc(ref, baseData, { merge: true });
-      return;
-    }
-
-    // No existe: crearlo con role por defecto
-    await setDoc(ref, { ...baseData, role: 'user' }, { merge: true });
+    await setDoc(ref, data, { merge: true });
   }
 
   /**
@@ -58,15 +50,15 @@ export class UserService {
   }
 
   /**
-   * Actualiza el rol del usuario.
+   * Cambia el rol del usuario.
    */
-  async setRole(uid: string, role: string): Promise<void> {
+  async setRole(uid: string, role: UserRole): Promise<void> {
     const ref = doc(this.firestore, 'users', uid);
     await setDoc(ref, { role }, { merge: true });
   }
 
   /**
-   * Devuelve todos los usuarios registrados en Firestore.
+   * Lista todos los usuarios.
    */
   async getAllUsers(): Promise<AppUser[]> {
     const colRef = collection(this.firestore, 'users');

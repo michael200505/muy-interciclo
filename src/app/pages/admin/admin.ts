@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/user/user.service';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 
-import { AppUser } from '../../core/models/user.model';
+import { AppUser, UserRole } from '../../core/models/user.model';
 import { ProgrammerProfile } from '../../core/models/programmer.model';
 
 import { HeaderComponent } from "../../ui/header/header";
@@ -47,14 +47,14 @@ export class AdminPanelComponent {
 
   async ngOnInit() {
     await this.loadUsers();
-    await this.loadProgramgers();
+    await this.loadProgrammers();
   }
 
   async loadUsers() {
     this.users = await this.userService.getAllUsers();
   }
 
-  async loadProgramgers() {
+  async loadProgrammers() {
     this.programmers = await this.programmerService.getAllProgrammers();
   }
 
@@ -66,7 +66,8 @@ export class AdminPanelComponent {
     this.newProgrammer.photoURL = user.photoURL;
   }
 
-  async setRole(uid: string, role: string) {
+  // ✅ CORREGIDO: role es de tipo UserRole, no string
+  async setRole(uid: string, role: UserRole) {
     await this.userService.setRole(uid, role);
     await this.loadUsers();
     alert(`Rol cambiado a ${role}`);
@@ -92,46 +93,52 @@ export class AdminPanelComponent {
     };
 
     await this.loadUsers();
-    await this.loadProgramgers();
+    await this.loadProgrammers();
   }
+
   editProgrammer(p: ProgrammerProfile) {
-  this.selectedUser = {
-    uid: p.uid,
-    email: '',
-    displayName: p.name,
-    photoURL: p.photoURL,
-    role: 'programmer'
-  };
+    this.selectedUser = {
+      uid: p.uid,
+      email: '',
+      displayName: p.name,
+      photoURL: p.photoURL,
+      role: 'programmer'
+    };
 
-  this.newProgrammer = { ...p };
-}
-async updateProgrammer() {
-  await this.programmerService.updateProgrammer(this.newProgrammer.uid, this.newProgrammer);
+    this.newProgrammer = { ...p };
+  }
 
-  alert("Programador actualizado correctamente ✔");
+  async updateProgrammer() {
+    await this.programmerService.updateProgrammer(
+      this.newProgrammer.uid,
+      this.newProgrammer
+    );
 
-  this.selectedUser = null;
-  this.newProgrammer = {
-    uid: '',
-    name: '',
-    specialty: '',
-    description: '',
-    photoURL: '',
-    contactLinks: {},
-    socialLinks: {}
-  };
+    alert("Programador actualizado correctamente ✔");
 
-  await this.loadProgramgers();
-}
-async deleteProgrammer(uid: string) {
-  if (!confirm("¿Seguro que deseas eliminar este programador?")) return;
+    this.selectedUser = null;
+    this.newProgrammer = {
+      uid: '',
+      name: '',
+      specialty: '',
+      description: '',
+      photoURL: '',
+      contactLinks: {},
+      socialLinks: {}
+    };
 
-  await this.programmerService.deleteProgrammer(uid);
-  await this.userService.setRole(uid, 'user'); // lo devolvemos a usuario normal
+    await this.loadProgrammers();
+  }
 
-  alert("Programador eliminado ✔");
+  async deleteProgrammer(uid: string) {
+    if (!confirm("¿Seguro que deseas eliminar este programador?")) return;
 
-  await this.loadProgramgers();
-  await this.loadUsers();
-}
+    await this.programmerService.deleteProgrammer(uid);
+    await this.userService.setRole(uid, 'user'); // volver a rol normal
+
+    alert("Programador eliminado ✔");
+
+    await this.loadProgrammers();
+    await this.loadUsers();
+  }
 }
