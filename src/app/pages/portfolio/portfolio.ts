@@ -3,9 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { ProgrammerService } from '../../core/programmer/programmer.service';
-import { ProjectsService } from '../../core/project/project.service';
-import { HeaderComponent } from "../../ui/header/header";
-import { PageContainerComponent } from "../../ui/container/container";
+import { ProjectService } from '../../core/project/project.service';
+
+import { ProgrammerProfile } from '../../core/models/programmer.model';
+import { Project } from '../../core/models/project.model';
+
+import { HeaderComponent } from '../../ui/header/header';
+import { PageContainerComponent } from '../../ui/container/container';
 
 @Component({
   selector: 'app-portfolio',
@@ -18,21 +22,24 @@ export class PortfolioComponent {
 
   private route = inject(ActivatedRoute);
   private programmerService = inject(ProgrammerService);
-  private projectsService = inject(ProjectsService);
+  private projectService = inject(ProjectService);
   private router = inject(Router);
 
-  programmer: any = null;
-  projects: any[] = [];
+  programmer: ProgrammerProfile | null = null;
+  projects: Project[] = [];
 
   async ngOnInit() {
     const uid = this.route.snapshot.paramMap.get('id');
-    if (!uid) return;
+    if (!uid) {
+      this.router.navigate(['/']);
+      return;
+    }
 
     this.programmer = await this.programmerService.getProgrammer(uid);
-    this.projects = await this.projectsService.getProjectsByUser(uid);
+    this.projects = await this.projectService.getProjectsByUser(uid);
   }
 
-  agendar(uid: string) {
-    this.router.navigate(['/agendar', uid]);
+  agendar(id: string) {
+    this.router.navigate(['/agendar', id]);
   }
 }

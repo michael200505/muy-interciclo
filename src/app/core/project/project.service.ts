@@ -15,31 +15,34 @@ import { Project } from '../models/project.model';
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectsService {
+export class ProjectService {
 
   constructor(private firestore: Firestore) {}
 
-  private projectsCol() {
+  private col() {
     return collection(this.firestore, 'projects');
   }
 
-  async createProject(project: Project) {
+  async addProject(project: Project): Promise<void> {
     project.createdAt = Date.now();
-    await addDoc(this.projectsCol(), project);
+    await addDoc(this.col(), project);
   }
 
   async getProjectsByUser(uid: string): Promise<Project[]> {
-    const q = query(this.projectsCol(), where('uid', '==', uid));
+    const q = query(this.col(), where('uid', '==', uid));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() as Project }));
+    return snap.docs.map(d => ({
+      id: d.id,
+      ...d.data() as Project
+    }));
   }
 
-  async updateProject(id: string, data: Partial<Project>) {
+  async updateProject(id: string, data: Partial<Project>): Promise<void> {
     const ref = doc(this.firestore, 'projects', id);
     await setDoc(ref, data, { merge: true });
   }
 
-  async deleteProject(id: string) {
+  async deleteProject(id: string): Promise<void> {
     const ref = doc(this.firestore, 'projects', id);
     await deleteDoc(ref);
   }

@@ -14,7 +14,7 @@ import { Asesoria } from '../models/asesoria.model';
 @Injectable({
   providedIn: 'root'
 })
-export class AsesoriasService {
+export class AsesoriaService {
 
   constructor(private firestore: Firestore) {}
 

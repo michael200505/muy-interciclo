@@ -1,37 +1,48 @@
+<app-header></app-header>
+
 <page-container>
 
-  <div class="programmer-layout">
+  <h1>Panel del Programador</h1>
 
-    <programmer-sidebar></programmer-sidebar>
+  <!-- PROYECTOS -->
+  <section class="card">
+    <h2>Mis Proyectos</h2>
 
-    <div class="content">
+    <a class="btn-new" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
 
-      <section class="profile-box" *ngIf="profile">
-        <img [src]="profile.photoURL" class="avatar">
-        <h2>{{ profile.name }}</h2>
-        <h4>{{ profile.specialty }}</h4>
-        <p>{{ profile.description }}</p>
-      </section>
+    <div class="project-list">
+      <div class="project-item" *ngFor="let p of projects">
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.description }}</p>
+        <p><b>Tipo:</b> {{ p.type }}</p>
+        <p><b>Rol:</b> {{ p.role }}</p>
+        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
 
-      <section class="projects">
-        <div class="header">
-          <h3>Mis Proyectos</h3>
-          <a class="new-btn" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
+        <div class="actions">
+          <a [routerLink]="['/programmer/edit', p.uid]" class="edit">Editar</a>
+          <button class="delete">Eliminar</button>
         </div>
-
-        <div class="project-card" *ngFor="let p of projects">
-          <h4>{{ p.title }}</h4>
-          <p>{{ p.description }}</p>
-          <small>Rol: {{ p.role }} – Tipo: {{ p.type }}</small>
-
-          <div class="actions">
-            <a [href]="p.repoURL" target="_blank">Repositorio</a>
-            <a [href]="p.demoURL" target="_blank">Demo</a>
-          </div>
-        </div>
-      </section>
-
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ASESORÍAS -->
+  <section class="card">
+    <h2>Solicitudes de Asesorías</h2>
+
+    <div class="asesoria-list">
+      <div class="asesoria-item" *ngFor="let a of asesorias">
+        <p><b>Alumno:</b> {{ a.userName }}</p>
+        <p><b>Fecha:</b> {{ a.date }} — {{ a.hour }}</p>
+        <p><b>Motivo:</b> {{ a.comment }}</p>
+        <p><b>Estado:</b> {{ a.status }}</p>
+
+        <div class="actions">
+          <button *ngIf="a.status === 'pending'" (click)="approve(a)" class="approve">Aprobar</button>
+          <button *ngIf="a.status === 'pending'" (click)="reject(a)" class="reject">Rechazar</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </page-container>
