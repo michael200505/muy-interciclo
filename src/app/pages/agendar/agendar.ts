@@ -47,13 +47,14 @@ export class AgendarAsesoriaComponent {
   if (!user || !this.programmer) return;
 
   await this.asesoriaService.requestAsesoria({
-    programmerId: this.programmer.uid,
-    userId: user.uid,
-    userName: user.displayName ?? user.email ?? '',
-    date: this.form.date,
-    hour: this.form.hour,
-    comment: this.form.comment
-  });
+  programmerId: this.programmerId,
+  userId: user.uid,
+  userName: user.displayName ?? user.email ?? '',
+  date: this.form.date,
+  hour: this.form.hour,
+  comment: this.form.comment
+});
+
 
   alert('Solicitud enviada correctamente');
 }
