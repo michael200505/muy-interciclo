@@ -19,7 +19,7 @@
         <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
 
         <div class="actions">
-          <a [routerLink]="['/programmer/edit', p.uid]" class="edit">Editar</a>
+          <a routerLink="['/programmer/edit', p.uid]" class="edit">Editar</a>
           <button class="delete">Eliminar</button>
         </div>
       </div>

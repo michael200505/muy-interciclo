@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import {
   Firestore,
   doc,
-  setDoc,
   getDoc,
+  setDoc,
   collection,
-  getDocs
+  getDocs,
+  query,
+  where
 } from '@angular/fire/firestore';
+
 import { AppUser, UserRole } from '../models/user.model';
 
 @Injectable({
@@ -14,55 +17,68 @@ import { AppUser, UserRole } from '../models/user.model';
 })
 export class UserService {
 
-  constructor(private firestore: Firestore) { }
+  constructor(private firestore: Firestore) {}
 
-  /**
-   * Guarda el usuario en Firestore sin sobrescribir el rol existente.
-   */
-  async saveUser(user: any): Promise<void> {
-    const ref = doc(this.firestore, 'users', user.uid);
+  private colRef() {
+    return collection(this.firestore, 'users');
+  }
 
-    // ¿Ya existe en Firestore?
+  private docRef(uid: string) {
+    return doc(this.firestore, 'users', uid);
+  }
+
+  // Crear/actualizar usuario base al loguearse
+  async ensureUser(
+    firebaseUser: { uid: string; displayName: string | null; email: string | null; photoURL: string | null },
+    defaultRole: UserRole = 'user'
+  ): Promise<AppUser> {
+    const ref = this.docRef(firebaseUser.uid);
     const snap = await getDoc(ref);
-    const existing = snap.exists() ? (snap.data() as AppUser) : null;
 
-    // Si ya tenía rol, lo respetamos; si no, 'user'
-    const role: UserRole = existing?.role ?? 'user';
+    const now = Date.now();
 
-    const data: AppUser = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      role
+    if (snap.exists()) {
+      const data = snap.data() as AppUser;
+      return {
+        ...data,
+        displayName: firebaseUser.displayName || data.displayName,
+        email: firebaseUser.email || data.email,
+        photoURL: firebaseUser.photoURL || data.photoURL
+      };
+    }
+
+    const newUser: AppUser = {
+      uid: firebaseUser.uid,
+      displayName: firebaseUser.displayName || 'Usuario sin nombre',
+      email: firebaseUser.email || '',
+      photoURL: firebaseUser.photoURL || '',
+      role: defaultRole,
+      createdAt: now
     };
 
+    await setDoc(ref, newUser);
+    return newUser;
+  }
+
+  async getUser(uid: string): Promise<AppUser | null> {
+    const snap = await getDoc(this.docRef(uid));
+    if (!snap.exists()) return null;
+    return snap.data() as AppUser;
+  }
+
+  async getProgrammers(): Promise<AppUser[]> {
+    const q = query(this.colRef(), where('role', '==', 'programmer'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => d.data() as AppUser);
+  }
+
+  async updateUser(uid: string, data: Partial<AppUser>): Promise<void> {
+    const ref = this.docRef(uid);
     await setDoc(ref, data, { merge: true });
   }
 
-  /**
-   * Obtiene un usuario por UID.
-   */
-  async getUser(uid: string): Promise<AppUser | null> {
-    const ref = doc(this.firestore, 'users', uid);
-    const snap = await getDoc(ref);
-    return snap.exists() ? (snap.data() as AppUser) : null;
-  }
-
-  /**
-   * Cambia el rol del usuario.
-   */
-  async setRole(uid: string, role: UserRole): Promise<void> {
-    const ref = doc(this.firestore, 'users', uid);
+  async updateRole(uid: string, role: UserRole): Promise<void> {
+    const ref = this.docRef(uid);
     await setDoc(ref, { role }, { merge: true });
-  }
-
-  /**
-   * Lista todos los usuarios.
-   */
-  async getAllUsers(): Promise<AppUser[]> {
-    const colRef = collection(this.firestore, 'users');
-    const snap = await getDocs(colRef);
-    return snap.docs.map(d => d.data() as AppUser);
   }
 }

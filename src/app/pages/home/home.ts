@@ -1,30 +1,37 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProgrammerService } from '../../core/programmer/programmer.service';
-import { ProgrammerProfile } from '../../core/models/programmer.model';
 import { Router } from '@angular/router';
-import { HeaderComponent } from "../../ui/header/header";
-import { PageContainerComponent } from "../../ui/container/container";
-imports: [PageContainerComponent]
+
+import { UserService } from '../../core/user/user.service';
+import { AppUser } from '../../core/models/user.model';
+
+import { HeaderComponent } from '../../ui/header/header';
+import { PageContainerComponent } from '../../ui/container/container';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, PageContainerComponent],
-  templateUrl: './home.html'
+  imports: [
+    CommonModule,           // ✔ para *ngFor
+    HeaderComponent,        // ✔ para <app-header>
+    PageContainerComponent  // ✔ para <page-container> o <app-page-container>
+  ],
+  templateUrl: './home.html',
+  styleUrls: ['./home.scss']
 })
-export class PublicHomeComponent {
+export class HomeComponent implements OnInit {
 
-  private programmerService = inject(ProgrammerService);
   private router = inject(Router);
+  private userService = inject(UserService);
 
-  programmers: ProgrammerProfile[] = [];
+  programmers: AppUser[] = [];
 
   async ngOnInit() {
-    this.programmers = await this.programmerService.getAllProgrammers();
+    // cargamos todos los programadores
+    this.programmers = await this.userService.getProgrammers();
   }
 
   openPortfolio(uid: string) {
-    this.router.navigate(['/portfolio', uid]);
+    this.router.navigate(['/portafolio', uid]);
   }
 }

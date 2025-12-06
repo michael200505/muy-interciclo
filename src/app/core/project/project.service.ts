@@ -23,14 +23,21 @@ export class ProjectService {
     return collection(this.firestore, 'projects');
   }
 
-  async addProject(project: Project): Promise<void> {
+  // ✔ Método que usa el FORM: createProject()
+  async createProject(project: Project): Promise<void> {
     project.createdAt = Date.now();
     await addDoc(this.col(), project);
+  }
+
+  // (tu método original, ya no es necesario pero lo dejo por compatibilidad)
+  async addProject(project: Project): Promise<void> {
+    return this.createProject(project);
   }
 
   async getProjectsByUser(uid: string): Promise<Project[]> {
     const q = query(this.col(), where('uid', '==', uid));
     const snap = await getDocs(q);
+
     return snap.docs.map(d => ({
       id: d.id,
       ...d.data() as Project

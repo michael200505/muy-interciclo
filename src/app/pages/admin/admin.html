@@ -1,85 +1,33 @@
 <app-header></app-header>
 
-<page-container>
 
-  <div class="admin-container">
+  <h1>Panel de Administrador</h1>
 
-    <!-- ====================== -->
-    <!-- LISTA DE USUARIOS -->
-    <!-- ====================== -->
-    <section class="card">
-      <h2>Usuarios registrados</h2>
-      <p class="subtitle">Selecciona un usuario para gestionar su rol o crear su perfil de programador.</p>
+  <h2>Programadores registrados</h2>
 
-      <div class="user-list">
-        <div
-          class="user-item"
-          *ngFor="let user of users"
-          (click)="selectUser(user)"
-          [class.selected]="selectedUser?.uid === user.uid"
-        >
-          <img [src]="user.photoURL" alt="Foto" />
-          <div class="info">
-            <strong>{{ user.displayName }}</strong>
-            <span>{{ user.email }}</span>
-            <span class="role">Rol actual: <b>{{ user.role }}</b></span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div *ngIf="loading">Cargando...</div>
 
-    <!-- ====================== -->
-    <!-- GESTIÓN DE ROLES -->
-    <!-- ====================== -->
-    <section class="card" *ngIf="selectedUser">
-      <h2>Gestionar usuario</h2>
-      <p><b>{{ selectedUser.displayName }}</b></p>
-
-      <div class="btn-group">
-        <button (click)="setRole(selectedUser.uid, 'user')">Asignar User</button>
-        <button (click)="setRole(selectedUser.uid, 'admin')">Asignar Admin</button>
-        <button (click)="setRole(selectedUser.uid, 'programmer')">Asignar Programmer</button>
-      </div>
-
-      <hr>
-
-      <!-- ====================== -->
-      <!-- CREAR PROGRAMADOR -->
-      <!-- ====================== -->
-      <h3>Crear perfil de Programador</h3>
-
-      <form (ngSubmit)="makeProgrammer()" class="form">
-
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="newProgrammer.name" name="name" required />
-
-        <label>Especialidad</label>
-        <input type="text" [(ngModel)]="newProgrammer.specialty" name="specialty" required />
-
-        <label>Descripción</label>
-        <textarea [(ngModel)]="newProgrammer.description" name="description" rows="3"></textarea>
-
-        <button type="submit" class="primary-btn">Crear Perfil</button>
-      </form>
-    </section>
-
-    <!-- ====================== -->
-    <!-- LISTA DE PROGRAMADORES -->
-    <!-- ====================== -->
-    <section class="card">
-      <h2>Programadores creados</h2>
-
-      <div class="programmer-list">
-        <div class="programmer-item" *ngFor="let p of programmers">
-          <img [src]="p.photoURL" />
-          <div class="info">
-            <strong>{{ p.name }}</strong>
-            <span>{{ p.specialty }}</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-</page-container>
+  <table *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Especialidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of programmers">
+        <td>{{ p.displayName }}</td>
+        <td>{{ p.email }}</td>
+        <td>{{ p.role }}</td>
+        <td>{{ p.specialty || '-' }}</td>
+        <td>
+          <button (click)="changeRole(p, 'programmer')">Programador</button>
+          <button (click)="changeRole(p, 'admin')">Admin</button>
+          <button (click)="changeRole(p, 'user')">User</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>

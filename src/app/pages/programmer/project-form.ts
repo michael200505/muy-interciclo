@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
+import { ProjectService } from '../../core/project/project.service';
 
-import { ProjectsService } from '../../core/project/project.service';
 import { PageContainerComponent } from '../../ui/container/container';
 import { HeaderComponent } from '../../ui/header/header';
 
@@ -23,10 +23,10 @@ import { HeaderComponent } from '../../ui/header/header';
 export class ProjectFormComponent {
 
   private auth = inject(Auth);
-  private projectsService = inject(ProjectsService);
+  private projectService = inject(ProjectService); // ✔ CORRECTO
   private router = inject(Router);
 
-  // AHORA COINCIDE EXACTAMENTE CON EL MODELO Project
+  // Modelo del proyecto
   project = {
     title: '',
     description: '',
@@ -41,13 +41,16 @@ export class ProjectFormComponent {
     const user = this.auth.currentUser;
     if (!user) return;
 
-    await this.projectsService.createProject({
+    await this.projectService.createProject({
       uid: user.uid,
       title: this.project.title,
       description: this.project.description,
       type: this.project.type,
       role: this.project.role,
-      technologies: this.project.technologies.split(',').map(t => t.trim()),
+      technologies: this.project.technologies
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0),
       repoURL: this.project.repoURL,
       demoURL: this.project.demoURL,
       createdAt: Date.now()

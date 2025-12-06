@@ -1,45 +1,42 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../core/auth/auth.service';
+import { Auth, GoogleAuthProvider, signInWithPopup } from '@angular/fire/auth';
 import { UserService } from '../../core/user/user.service';
+
+import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
 
 @Component({
   selector: 'app-login',
   standalone: true,
+  imports: [HeaderComponent, PageContainerComponent],
   templateUrl: './login.html',
-  styleUrls: ['./login.scss'],
-  imports: [PageContainerComponent]
+  styleUrls: ['./login.scss']
 })
 export class LoginComponent {
-  private authService = inject(AuthService);
-  private userService = inject(UserService);
+
+  private auth = inject(Auth);
   private router = inject(Router);
+  private userService = inject(UserService);
 
   async login() {
-  console.log("Iniciando login...");
-  this.authService.loginWithGoogle()
-    .then(async cred => {
-      console.log("Login OK:", cred.user);
+    try {
+      const provider = new GoogleAuthProvider();
+      const cred = await signInWithPopup(this.auth, provider);
 
-      // Guardar sin perder rol existente
-      await this.userService.saveUser(cred.user);
+      // Registro / actualización de usuario
+      const dbUser = await this.userService.ensureUser({
+        uid: cred.user.uid,
+        displayName: cred.user.displayName,
+        email: cred.user.email,
+        photoURL: cred.user.photoURL
+      });
 
-      // Recuperar el usuario con su rol REAL
-      const dbUser = await this.userService.getUser(cred.user.uid);
-      console.log("Usuario en BD:", dbUser);
+      console.log('Login OK:', dbUser);
 
-      // REDIRECCIÓN SEGÚN ROL
-      if (dbUser?.role === 'admin') {
-        this.router.navigate(['/admin']);
-      }
-      else if (dbUser?.role === 'programmer') {
-        this.router.navigate(['/programmer']);
-      }
-      else {
-        this.router.navigate(['/']);
-      }
-    })
-    .catch(err => console.error("Error en login:", err));
-}
+      this.router.navigate(['/']);
+    } catch (error) {
+      console.error('Error login:', error);
+    }
+  }
 }
