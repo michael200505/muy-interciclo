@@ -14,8 +14,9 @@ export class HeaderComponent {
 
   constructor(private auth: Auth, private router: Router) {}
 
-  logout() {
-    this.auth.signOut();
-    this.router.navigate(['/']);
-  }
+ async logout() {
+  await this.auth.signOut();
+  this.router.navigate(['/login']);
+}
+
 }
