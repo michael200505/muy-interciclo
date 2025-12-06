@@ -27,7 +27,7 @@ export class UserService {
     return doc(this.firestore, 'users', uid);
   }
 
-  // Crear/actualizar usuario base al loguearse
+  // 🟢 Crear o actualizar usuario cuando inicia sesión
   async ensureUser(
     firebaseUser: { uid: string; displayName: string | null; email: string | null; photoURL: string | null },
     defaultRole: UserRole = 'user'
@@ -39,6 +39,7 @@ export class UserService {
 
     if (snap.exists()) {
       const data = snap.data() as AppUser;
+
       return {
         ...data,
         displayName: firebaseUser.displayName || data.displayName,
@@ -60,25 +61,27 @@ export class UserService {
     return newUser;
   }
 
+  // 🟢 Obtener usuario por ID
   async getUser(uid: string): Promise<AppUser | null> {
     const snap = await getDoc(this.docRef(uid));
-    if (!snap.exists()) return null;
-    return snap.data() as AppUser;
+    return snap.exists() ? (snap.data() as AppUser) : null;
   }
 
+  // 🟢 Obtener solo los programadores
   async getProgrammers(): Promise<AppUser[]> {
     const q = query(this.colRef(), where('role', '==', 'programmer'));
     const snap = await getDocs(q);
+
     return snap.docs.map(d => d.data() as AppUser);
   }
 
+  // 🟢 Actualizar usuario
   async updateUser(uid: string, data: Partial<AppUser>): Promise<void> {
-    const ref = this.docRef(uid);
-    await setDoc(ref, data, { merge: true });
+    await setDoc(this.docRef(uid), data, { merge: true });
   }
 
+  // 🟢 Cambiar rol
   async updateRole(uid: string, role: UserRole): Promise<void> {
-    const ref = this.docRef(uid);
-    await setDoc(ref, { role }, { merge: true });
+    await setDoc(this.docRef(uid), { role }, { merge: true });
   }
 }

@@ -1,54 +1,37 @@
-/* page-container.scss */
 .page-container {
-  /* Estructura y consistencia */
-  min-height: 100dvh; /* mejor que 100vh en móviles modernos */
+  min-height: 100dvh;
   width: 100%;
-
-  /* Lectura y jerarquía visual */
   margin-inline: auto;
   padding: clamp(16px, 2.5vw, 32px);
-
-  /* Control de ancho (heurística: no líneas demasiado largas) */
   max-width: 1200px;
-
-  /* Ritmo vertical entre secciones (cuando ng-content renderiza bloques) */
-  display: flow-root;
-
-  /* Tipografía base neutra (si no la define tu global) */
+  display: block;
   line-height: 1.5;
-
-  /* Suavidad visual */
   background: var(--page-bg, transparent);
   color: var(--page-fg, inherit);
-
-  /* Accesibilidad: foco visible para elementos interactivos dentro */
-  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-    outline: 3px solid var(--focus-ring, #3b82f6);
-    outline-offset: 3px;
-    border-radius: 6px;
-  }
-
-  /* Imágenes y medios responsivos */
-  :where(img, video, canvas, svg) {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Evita desbordes por strings largas/códigos */
-  overflow-wrap: anywhere;
-
-  /* Preferencias del usuario */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      scroll-behavior: auto !important;
-      transition: none !important;
-      animation: none !important;
-    }
-  }
 }
 
-/* Si tu app usa header fijo, puedes activar este “offset” opcional:
-.page-container {
-  padding-top: calc(clamp(16px, 2.5vw, 32px) + var(--header-height, 0px));
+/* Permitir clics y escritura SIEMPRE */
+.page-container,
+.page-container * {
+  pointer-events: auto !important;
 }
-*/
+
+/* Asegurar foco accesible */
+.page-container :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring, #3b82f6);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Medios responsivos dentro del contenedor */
+.page-container :where(img, video, canvas, svg) {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Evitar que user-motion rompa interacción */
+@media (prefers-reduced-motion: reduce) {
+  .page-container {
+    scroll-behavior: auto !important;
+  }
+}

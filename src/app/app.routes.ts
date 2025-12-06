@@ -3,54 +3,57 @@ import { RoleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
 
-  // 🌐 Página principal pública
-  {
+
+   {
     path: '',
-    loadComponent: () =>
-      import('./pages/home/home').then(m => m.HomeComponent)
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
 
-  // 🔐 LOGIN (PÚBLICO)
+  // Redirigir al login al abrir la app
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+  // LOGIN (público)
   {
     path: 'login',
     loadComponent: () =>
-      import('./pages/login/login').then(m => m.LoginComponent)
+      import('./pages/login/login').then((m) => m.LoginComponent),
   },
 
-  // 👨‍💻 Panel del programador
+  // HOME (usuario normal)
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./pages/home/home').then((m) => m.HomeComponent),
+  },
+
+  // PANEL PROGRAMADOR
   {
     path: 'programmer',
     canActivate: [RoleGuard],
     data: { roles: ['programmer'] },
     loadComponent: () =>
       import('./pages/programmer/programmer').then(
-        m => m.ProgrammerPanelComponent
-      )
+        (m) => m.ProgrammerPanelComponent
+      ),
   },
 
-  // 🛠️ Panel del administrador
+  // PANEL ADMINISTRADOR
   {
     path: 'admin',
     canActivate: [RoleGuard],
     data: { roles: ['admin'] },
     loadComponent: () =>
-      import('./pages/admin/admin').then(
-        m => m.AdminPanelComponent
-      )
+      import('./pages/admin/admin').then((m) => m.AdminPanelComponent),
   },
 
-  // 🔎 Portafolio público
+  // PORTAFOLIO PÚBLICO
   {
     path: 'portafolio/:uid',
     loadComponent: () =>
-      import('./pages/portfolio/portfolio').then(
-        m => m.PortfolioComponent
-      )
+      import('./pages/portfolio/portfolio').then((m) => m.PortfolioComponent),
   },
 
-  // ⚠️ Fallback
-  {
-    path: '**',
-    redirectTo: ''
-  }
+  // Fallback — cualquier ruta desconocida → login
+  { path: '**', redirectTo: 'login' },
 ];
