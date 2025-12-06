@@ -75,6 +75,20 @@ export class UserService {
     return snap.docs.map(d => d.data() as AppUser);
   }
 
+ // 🟢 Obtener TODOS los usuarios
+async getAllUsers(): Promise<AppUser[]> {
+  const snap = await getDocs(this.colRef());
+
+  return snap.docs.map(d => ({
+    id: d.id,
+    uid: d.id,           // ⚠ Necesario para updateRole()
+    ...(d.data() as AppUser)
+  }));
+}
+
+
+
+
   // 🟢 Actualizar usuario
   async updateUser(uid: string, data: Partial<AppUser>): Promise<void> {
     await setDoc(this.docRef(uid), data, { merge: true });

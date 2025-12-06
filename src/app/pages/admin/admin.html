@@ -1,9 +1,10 @@
 <app-header></app-header>
 
+<page-container>
 
   <h1>Panel de Administrador</h1>
 
-  <h2>Programadores registrados</h2>
+  <h2>Gestión de Usuarios</h2>
 
   <div *ngIf="loading">Cargando...</div>
 
@@ -13,21 +14,24 @@
         <th>Nombre</th>
         <th>Email</th>
         <th>Rol</th>
-        <th>Especialidad</th>
         <th>Acciones</th>
       </tr>
     </thead>
+
     <tbody>
-      <tr *ngFor="let p of programmers">
-        <td>{{ p.displayName }}</td>
-        <td>{{ p.email }}</td>
-        <td>{{ p.role }}</td>
-        <td>{{ p.specialty || '-' }}</td>
+      <tr *ngFor="let user of allUsers">
+        <td>{{ user.displayName }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+
         <td>
-          <button (click)="changeRole(p, 'programmer')">Programador</button>
-          <button (click)="changeRole(p, 'admin')">Admin</button>
-          <button (click)="changeRole(p, 'user')">User</button>
+          <button (click)="changeRole(user, 'user')">User</button>
+          <button (click)="changeRole(user, 'programmer')">Programador</button>
+          <button (click)="changeRole(user, 'admin')">Admin</button>
         </td>
       </tr>
     </tbody>
+
   </table>
+
+</page-container>
