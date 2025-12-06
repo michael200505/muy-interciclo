@@ -3,7 +3,7 @@
 <page-container>
     <h1>Agendar asesoría</h1>
 
-    <form (ngSubmit)="send()" class="form">
+   <form (ngSubmit)="enviarSolicitud()" class="form">
         <label>Nombre</label>
         <input type="text" [(ngModel)]="form.name" name="name" required>
 
@@ -14,7 +14,7 @@
         <input type="date" [(ngModel)]="form.date" name="date" required>
 
         <label>Hora</label>
-        <input type="time" [(ngModel)]="form.time" name="time" required>
+        <input type="time" [(ngModel)]="form.hour" name="time" required>
 
         <label>Comentario (opcional)</label>
         <textarea [(ngModel)]="form.comment" name="comment"></textarea>

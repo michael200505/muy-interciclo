@@ -4,16 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
 import { Auth } from '@angular/fire/auth';
-import { HeaderComponent } from "../../ui/header/header";
-import { PageContainerComponent } from "../../ui/container/container";
-import { Asesoria } from '../../core/models/asesoria.model';
-
+import { HeaderComponent } from '../../ui/header/header';
+import { PageContainerComponent } from '../../ui/container/container';
 
 @Component({
   selector: 'app-agendar',
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
-  templateUrl: './agendar.html'
+  templateUrl: './agendar.html',
+  styleUrls: ['./agendar.scss']
 })
 export class AgendarAsesoriaComponent {
 
@@ -23,39 +22,40 @@ export class AgendarAsesoriaComponent {
   private router = inject(Router);
 
   programmerId: string = '';
+
   form = {
     name: '',
     email: '',
     date: '',
-    time: '',
+    hour: '',      
     comment: ''
   };
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.programmerId = this.route.snapshot.params['id'];
 
     const current = this.auth.currentUser;
-
     if (current) {
       this.form.name = current.displayName || '';
       this.form.email = current.email || '';
     }
   }
 
- async enviarSolicitud() {
-  const user = this.auth.currentUser;
-  if (!user || !this.programmer) return;
+  async enviarSolicitud(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user || !this.programmerId) return;
 
-  await this.asesoriaService.requestAsesoria({
-  programmerId: this.programmerId,
-  userId: user.uid,
-  userName: user.displayName ?? user.email ?? '',
-  date: this.form.date,
-  hour: this.form.hour,
-  comment: this.form.comment
-});
+    await this.asesoriaService.requestAsesoria({
+      programmerId: this.programmerId,
+      userId: user.uid,
+      name: this.form.name,      
+      email: this.form.email,    
+      date: this.form.date,
+      hour: this.form.hour,
+      comment: this.form.comment
+    });
 
-
-  alert('Solicitud enviada correctamente');
-}
+    alert('Solicitud enviada correctamente');
+    this.router.navigate(['/mis-asesorias']);
+  }
 }

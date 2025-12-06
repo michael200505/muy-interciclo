@@ -1,3 +1,4 @@
+// src/app/pages/programmer/programmer.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
@@ -21,13 +22,16 @@ export class ProgrammerPanelComponent {
   private router = inject(Router);
 
   asesorias: Asesoria[] = [];
-
-  async ngOnInit() {
-    const user = this.auth.currentUser;
-    if (!user) return this.router.navigate(['/login']);
-
-    this.asesorias = await this.asesoriaService.getAsesoriasByRequest(user.uid);
+  
+async ngOnInit(): Promise<void> {
+  const user = this.auth.currentUser;
+  if (!user) {
+    this.router.navigate(['/login']);
+    return;
   }
+
+  this.asesorias = await this.asesoriaService.getAsesoriasByRequest(user.uid);
+}
 
   // APROBAR ASESORÍA
   async approve(a: Asesoria) {

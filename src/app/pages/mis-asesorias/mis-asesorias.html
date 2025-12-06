@@ -7,12 +7,12 @@
     <div class="asesoria-card" *ngFor="let a of asesorias">
       <div class="asesoria-main">
         <p><b>Programador:</b> {{ a.programmerId }}</p>
-        <p><b>Fecha:</b> {{ a.date }} - {{ a.time }}</p>
+        <p><b>Fecha:</b> {{ a.date }} - {{ a.hour }}</p> <!-- 👈 CAMBIO: hour -->
         <p><b>Comentario enviado:</b> {{ a.comment }}</p>
         <p><b>Estado:</b> {{ a.status }}</p>
 
-        <p *ngIf="a.responseMessage">
-          <b>Respuesta del programador:</b> {{ a.responseMessage }}
+        <p *ngIf="a.response">
+          <b>Respuesta del programador:</b> {{ a.response }} <!-- 👈 CAMBIO: response -->
         </p>
       </div>
     </div>
