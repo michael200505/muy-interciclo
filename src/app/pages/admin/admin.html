@@ -1,20 +1,19 @@
 <app-header></app-header>
 
 <page-container>
-
   <h1>Panel de Administrador</h1>
-
   <h2>Gestión de Usuarios</h2>
 
   <div *ngIf="loading">Cargando...</div>
 
-  <table *ngIf="!loading">
+  <!-- Tabla de usuarios -->
+  <table *ngIf="!loading && !selectedUser">
     <thead>
       <tr>
         <th>Nombre</th>
         <th>Email</th>
         <th>Rol</th>
-        <th>Acciones</th>
+        <th>Acción</th>
       </tr>
     </thead>
 
@@ -25,13 +24,46 @@
         <td>{{ user.role }}</td>
 
         <td>
-          <button (click)="changeRole(user, 'user')">User</button>
-          <button (click)="changeRole(user, 'programmer')">Programador</button>
-          <button (click)="changeRole(user, 'admin')">Admin</button>
+          <!-- Botón para crear perfil de programador -->
+          <button (click)="startProgrammerSetup(user)">Crear Perfil Programador</button>
         </td>
       </tr>
     </tbody>
-
   </table>
 
+  <!-- Formulario para crear programador -->
+  <div *ngIf="selectedUser" class="form-box">
+    <h2>Crear Perfil para: {{ selectedUser.displayName }}</h2>
+
+    <label>Nombre:</label>
+    <input [(ngModel)]="newProgrammer.name" type="text">
+
+    <label>Especialidad:</label>
+    <input [(ngModel)]="newProgrammer.specialty" type="text">
+
+    <label>Descripción:</label>
+    <textarea [(ngModel)]="newProgrammer.description"></textarea>
+
+    <label>Foto URL:</label>
+    <input [(ngModel)]="newProgrammer.photoURL" type="text">
+
+    <h3>Contactos</h3>
+
+    <label>Email:</label>
+    <input [(ngModel)]="newProgrammer.contactLinks.email" type="text">
+
+    <label>LinkedIn:</label>
+    <input [(ngModel)]="newProgrammer.contactLinks.linkedin" type="text">
+
+    <label>GitHub:</label>
+    <input [(ngModel)]="newProgrammer.contactLinks.github" type="text">
+
+    <label>WhatsApp:</label>
+    <input [(ngModel)]="newProgrammer.contactLinks.whatsapp" type="text">
+
+    <div class="btn-group">
+      <button (click)="saveProgrammerProfile()" class="primary-btn">Guardar</button>
+      <button (click)="selectedUser = null">Cancelar</button>
+    </div>
+  </div>
 </page-container>

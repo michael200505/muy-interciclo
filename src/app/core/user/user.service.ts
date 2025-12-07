@@ -85,11 +85,6 @@ async getAllUsers(): Promise<AppUser[]> {
   }));
 }
 
-
-
-
-
-
   // 🟢 Actualizar usuario
   async updateUser(uid: string, data: Partial<AppUser>): Promise<void> {
     await setDoc(this.docRef(uid), data, { merge: true });

@@ -131,4 +131,34 @@ table, th, td {
 .delete:hover {
   background: #b02a37;
 }
+/* ===========================
+   🔥 FIX PARA TABLAS EN ADMIN
+   =========================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: white;
+  font-size: 1rem;
+}
+
+thead {
+  background: #f2f2f2;
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+  background: #f9f9f9;
+}
+
+button {
+  margin-right: 6px;
+}
+
 

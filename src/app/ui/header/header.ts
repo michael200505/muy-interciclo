@@ -16,7 +16,7 @@ export class HeaderComponent {
 
  async logout() {
   await this.auth.signOut();
-  this.router.navigate(['/login']);
+  window.location.href = '/login';   // 🔥 Recarga la aplicación completa
 }
 
 }
