@@ -1,24 +1,63 @@
 <app-header></app-header>
 
-<page-container>
-  <h1>Agendar asesoría</h1>
+<page-container class="page page--user" @pageIn>
+  <div class="head">
+    <div>
+      <h1>Agendar asesoría</h1>
+      <p class="muted">
+        Completa los datos y envía tu solicitud. El programador podrá aprobar o rechazar.
+      </p>
+    </div>
 
-  <form (ngSubmit)="enviarSolicitud()" class="form">
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="form.name" name="name" required>
+    <span class="pill pill--neutral">Solicitud</span>
+  </div>
 
-    <label>Email</label>
-    <input type="email" [(ngModel)]="form.email" name="email" required>
+  <section class="card form-card anim-in">
+    <form (ngSubmit)="enviarSolicitud()" class="form">
+      <div class="grid2">
+        <div>
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="form.name" name="name" required />
+        </div>
 
-    <label>Fecha</label>
-    <input type="date" [(ngModel)]="form.date" name="date" required>
+        <div>
+          <label>Email</label>
+          <input type="email" [(ngModel)]="form.email" name="email" required />
+        </div>
+      </div>
 
-    <label>Hora</label>
-    <input type="time" [(ngModel)]="form.hour" name="hour" required>
+      <div class="grid2">
+        <div>
+          <label>Fecha</label>
+          <input type="date" [(ngModel)]="form.date" name="date" required />
+          <div class="hint">Elige el día que deseas la asesoría.</div>
+        </div>
 
-    <label>Comentario (opcional)</label>
-    <textarea [(ngModel)]="form.comment" name="comment"></textarea>
+        <div>
+          <label>Hora</label>
+          <input type="time" [(ngModel)]="form.hour" name="hour" required />
+          <div class="hint">Selecciona una hora disponible.</div>
+        </div>
+      </div>
 
-    <button type="submit">Enviar solicitud</button>
-  </form>
+      <div>
+        <label>Comentario (opcional)</label>
+        <textarea [(ngModel)]="form.comment" name="comment" placeholder="¿En qué necesitas ayuda?"></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button class="primary-btn" type="submit" [disabled]="submitting">
+          {{ submitting ? 'Enviando…' : 'Enviar solicitud' }}
+        </button>
+
+        <button class="ghost-btn" type="button" routerLink="/home" [disabled]="submitting">
+          Cancelar
+        </button>
+      </div>
+
+      <div class="hint subtle">
+        Consejo: si no aparece el popup de Google al iniciar sesión, revisa el bloqueador del navegador.
+      </div>
+    </form>
+  </section>
 </page-container>

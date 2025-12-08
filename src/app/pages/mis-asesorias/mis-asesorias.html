@@ -1,27 +1,67 @@
 <app-header></app-header>
 
-<page-container>
-  <h1>Mis asesorías</h1>
+<page-container class="page page--user" @pageIn>
+  <div class="head">
+    <div>
+      <h1>Mis asesorías</h1>
+      <p class="muted">Revisa el estado de tus solicitudes y la respuesta del programador.</p>
+    </div>
+    <span class="pill pill--neutral" *ngIf="!loading">{{ asesorias.length }} total</span>
+  </div>
 
-  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="loading" class="card skeleton">
+    <div class="sk-row"></div>
+    <div class="sk-row"></div>
+    <div class="sk-row"></div>
+  </div>
 
-  <div *ngIf="!loading && asesorias.length === 0">
+  <div *ngIf="!loading && asesorias.length === 0" class="card empty anim-in">
     Aún no has solicitado asesorías.
   </div>
 
-  <div *ngIf="!loading && asesorias.length > 0" class="list">
-    <div class="item" *ngFor="let a of asesorias">
-  <p>
-    <b>Programador:</b>
-    {{ a.programmerName || a.programmerId }}
-    <span *ngIf="a.programmerSpecialty"> — {{ a.programmerSpecialty }}</span>
-  </p>
+  <div class="list" *ngIf="!loading && asesorias.length > 0">
+    <article class="asesoria-card anim-in" *ngFor="let a of asesorias">
+      <div class="top-row">
+        <div class="who">
+          <div class="avatar" aria-hidden="true">
+            <img *ngIf="a.programmerPhotoURL" [src]="a.programmerPhotoURL" alt="" />
+            <span *ngIf="!a.programmerPhotoURL">{{ (a.programmerName || 'P').slice(0,1) }}</span>
+          </div>
 
-  <p><b>Fecha:</b> {{ a.date }} — {{ a.hour }}</p>
-  <p><b>Motivo:</b> {{ a.comment || '—' }}</p>
-  <p><b>Estado:</b> {{ a.status }}</p>
+          <div class="who-text">
+            <div class="name">
+              {{ a.programmerName || a.programmerId }}
+              <span class="dot">•</span>
+              <span class="spec" *ngIf="a.programmerSpecialty">{{ a.programmerSpecialty }}</span>
+            </div>
 
-  <div *ngIf="a.response" class="response">
-    <b>Respuesta:</b> {{ a.response }}
+            <div class="when">
+              <span><b>Fecha:</b> {{ a.date }}</span>
+              <span class="dot">•</span>
+              <span><b>Hora:</b> {{ a.hour }}</span>
+            </div>
+          </div>
+        </div>
+
+        <span class="pill"
+          [class.pill--ok]="a.status === 'approved'"
+          [class.pill--bad]="a.status === 'rejected'"
+          [class.pill--neutral]="a.status === 'pending'">
+          {{ statusLabel(a.status) }}
+        </span>
+      </div>
+
+      <div class="body">
+        <div class="field">
+          <div class="label">Motivo</div>
+          <div class="value">{{ a.comment || '—' }}</div>
+        </div>
+
+        <div class="reply" *ngIf="a.response">
+          <div class="label">Respuesta</div>
+          <div class="value">{{ a.response }}</div>
+        </div>
+      </div>
+    </article>
   </div>
-</div>
+</page-container>

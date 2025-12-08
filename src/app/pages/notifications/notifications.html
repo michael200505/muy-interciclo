@@ -1,25 +1,42 @@
 <app-header></app-header>
 
-<page-container>
+<page-container class="page page--user" @pageIn>
   <div class="top">
-    <h1>Notificaciones</h1>
+    <div>
+      <h1>Notificaciones</h1>
+      <p class="muted">Mantente al día con asesorías y actualizaciones.</p>
+    </div>
 
-    <button class="btn-link" (click)="markAllRead()" *ngIf="items.length > 0">
-      Marcar todas como leídas
-    </button>
+    <div class="top-actions" *ngIf="!loading && items.length > 0">
+      <span class="pill" [class.pill--neutral]="unreadCount()===0">
+        {{ unreadCount() }} sin leer
+      </span>
+
+      <button class="ghost-btn" (click)="markAllRead()">
+        Marcar todas como leídas
+      </button>
+    </div>
   </div>
 
-  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="loading" class="card skeleton">
+    <div class="sk-row"></div>
+    <div class="sk-row"></div>
+    <div class="sk-row"></div>
+  </div>
 
-  <div *ngIf="!loading && items.length === 0" class="empty">
+  <div *ngIf="!loading && items.length === 0" class="card empty anim-in">
     No tienes notificaciones aún.
   </div>
 
   <div class="list" *ngIf="!loading && items.length > 0">
-    <div class="card" *ngFor="let n of items; trackBy: trackById" [class.unread]="!n.read">
-      <div class="card-head">
-        <div class="title">
-          <span class="badge" *ngIf="!n.read">NUEVO</span>
+    <article
+      class="n-card anim-in"
+      *ngFor="let n of items; trackBy: trackById"
+      [class.unread]="!n.read"
+    >
+      <div class="n-head">
+        <div class="left">
+          <span class="pill pill--new" *ngIf="!n.read">NUEVO</span>
           <h3>{{ n.title }}</h3>
         </div>
 
@@ -31,24 +48,23 @@
       <p class="msg">{{ n.message }}</p>
 
       <div class="extra" *ngIf="n.date || n.hour">
-        <span *ngIf="n.date"><b>Fecha:</b> {{ n.date }}</span>
-        <span *ngIf="n.hour"><b>Hora:</b> {{ n.hour }}</span>
+        <span class="pill pill--neutral" *ngIf="n.date"><b>Fecha:</b>&nbsp;{{ n.date }}</span>
+        <span class="pill pill--neutral" *ngIf="n.hour"><b>Hora:</b>&nbsp;{{ n.hour }}</span>
       </div>
 
       <div class="actions">
-        <button class="btn" (click)="markRead(n)" *ngIf="!n.read">
+        <button class="primary-btn" (click)="markRead(n)" *ngIf="!n.read">
           Marcar leído
         </button>
 
-        <!-- Simulación de envío externo -->
-        <button class="btn ghost" (click)="simulateEmail(n)">
+        <button class="ghost-btn" (click)="simulateEmail(n)">
           Enviar correo
         </button>
 
-        <button class="btn ghost" (click)="simulateWhatsapp(n)">
+        <button class="ghost-btn" (click)="simulateWhatsapp(n)">
           Enviar WhatsApp
         </button>
       </div>
-    </div>
+    </article>
   </div>
 </page-container>

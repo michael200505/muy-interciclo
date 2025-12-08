@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
 import { NotificationService } from '../../core/notification/notification.service';
@@ -15,7 +16,15 @@ import { PageContainerComponent } from '../../ui/container/container';
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
   templateUrl: './agendar.html',
-  styleUrls: ['./agendar.scss']
+  styleUrls: ['./agendar.scss'],
+  animations: [
+    trigger('pageIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('520ms cubic-bezier(.2,.8,.2,1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class AgendarAsesoriaComponent implements OnInit {
   private asesoriaService = inject(AsesoriaService);
@@ -27,17 +36,22 @@ export class AgendarAsesoriaComponent implements OnInit {
 
   programmerId = '';
 
+  submitting = false;
+
   form = {
     name: '',
     email: '',
     date: '',
     hour: '',
-    comment: ''
+    comment: '',
   };
 
-  private async waitUser() {
-    return await new Promise<any>((resolve) => {
-      onAuthStateChanged(this.auth, (u) => resolve(u));
+  private waitUser() {
+    return new Promise<any>((resolve) => {
+      const unsub = onAuthStateChanged(this.auth, (u) => {
+        resolve(u);
+        if (unsub) unsub();
+      });
     });
   }
 
@@ -51,13 +65,18 @@ export class AgendarAsesoriaComponent implements OnInit {
     }
 
     const current = await this.waitUser();
-    if (current) {
-      this.form.name = current.displayName || '';
-      this.form.email = current.email || '';
+    if (!current) {
+      this.router.navigate(['/login']);
+      return;
     }
+
+    this.form.name = current.displayName || '';
+    this.form.email = current.email || '';
   }
 
   async enviarSolicitud(): Promise<void> {
+    if (this.submitting) return;
+
     const user = await this.waitUser();
     if (!user || !this.programmerId) {
       this.router.navigate(['/login']);
@@ -69,31 +88,40 @@ export class AgendarAsesoriaComponent implements OnInit {
       return;
     }
 
-    await this.asesoriaService.requestAsesoria({
-      programmerId: this.programmerId,
-      userId: user.uid,
-      name: this.form.name,
-      email: this.form.email,
-      date: this.form.date,
-      hour: this.form.hour,
-      comment: this.form.comment
-    });
+    try {
+      this.submitting = true;
 
-    // ✅ Notificación al programador (simulada)
-    await this.notifService.send({
-      toUid: this.programmerId,
-      roleTarget: 'programmer',
-      title: 'Nueva solicitud de asesoría 📩',
-      message: `${this.form.name} solicitó asesoría para ${this.form.date} a las ${this.form.hour}.`,
-      read: false,
-      createdAt: Date.now(),
-      programmerId: this.programmerId,
-      userId: user.uid,
-      date: this.form.date,
-      hour: this.form.hour
-    });
+      await this.asesoriaService.requestAsesoria({
+        programmerId: this.programmerId,
+        userId: user.uid,
+        name: this.form.name,
+        email: this.form.email,
+        date: this.form.date,
+        hour: this.form.hour,
+        comment: this.form.comment,
+      });
 
-    alert('Solicitud enviada correctamente');
-    this.router.navigate(['/mis-asesorias']);
+      // ✅ Notificación al programador
+      await this.notifService.send({
+        toUid: this.programmerId,
+        roleTarget: 'programmer',
+        title: 'Nueva solicitud de asesoría 📩',
+        message: `${this.form.name} solicitó asesoría para ${this.form.date} a las ${this.form.hour}.`,
+        read: false,
+        createdAt: Date.now(),
+        programmerId: this.programmerId,
+        userId: user.uid,
+        date: this.form.date,
+        hour: this.form.hour,
+      });
+
+      alert('Solicitud enviada correctamente');
+      this.router.navigate(['/mis-asesorias']);
+    } catch (e) {
+      console.error('Error enviando solicitud:', e);
+      alert('Ocurrió un error enviando la solicitud.');
+    } finally {
+      this.submitting = false;
+    }
   }
 }

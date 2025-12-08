@@ -2,6 +2,7 @@ import { Component, inject, OnInit, ChangeDetectorRef, NgZone } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
@@ -14,7 +15,15 @@ import { AppNotification } from '../../core/models/notification.model';
   standalone: true,
   imports: [CommonModule, HeaderComponent, PageContainerComponent],
   templateUrl: './notifications.html',
-  styleUrls: ['./notifications.scss']
+  styleUrls: ['./notifications.scss'],
+  animations: [
+    trigger('pageIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('520ms cubic-bezier(.2,.8,.2,1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class NotificationsComponent implements OnInit {
   private auth = inject(Auth);
@@ -26,9 +35,12 @@ export class NotificationsComponent implements OnInit {
   loading = true;
   items: AppNotification[] = [];
 
-  private async waitUser() {
-    return await new Promise<any>((resolve) => {
-      onAuthStateChanged(this.auth, (u) => resolve(u));
+  private waitUser() {
+    return new Promise<any>((resolve) => {
+      const unsub = onAuthStateChanged(this.auth, (u) => {
+        resolve(u);
+        if (unsub) unsub();
+      });
     });
   }
 
@@ -38,7 +50,6 @@ export class NotificationsComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
-
     await this.load(user.uid);
   }
 
@@ -48,6 +59,9 @@ export class NotificationsComponent implements OnInit {
       this.cdr.detectChanges();
 
       const data = await this.notifService.getByUser(uid);
+
+      // opcional: orden newest first
+      data.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
       this.zone.run(() => {
         this.items = [...data];
@@ -65,7 +79,7 @@ export class NotificationsComponent implements OnInit {
   }
 
   async markRead(n: AppNotification) {
-    if (!n.id) return;
+    if (!n.id || n.read) return;
     await this.notifService.markRead(n.id);
     n.read = true;
     this.cdr.detectChanges();
@@ -79,7 +93,6 @@ export class NotificationsComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // ✅ Simulación de envío externo (NO envía de verdad; solo evidencia el flujo)
   simulateEmail(n: AppNotification) {
     console.log('📧 SIMULACIÓN EMAIL:', {
       toUid: n.toUid,
@@ -87,7 +100,7 @@ export class NotificationsComponent implements OnInit {
       message: n.message,
       asesoriaId: n.asesoriaId,
       date: n.date,
-      hour: n.hour
+      hour: n.hour,
     });
     alert('📧 Simulación: "correo enviado" (revisa la consola).');
   }
@@ -99,12 +112,16 @@ export class NotificationsComponent implements OnInit {
       message: n.message,
       asesoriaId: n.asesoriaId,
       date: n.date,
-      hour: n.hour
+      hour: n.hour,
     });
     alert('📲 Simulación: "WhatsApp enviado" (revisa la consola).');
   }
 
   trackById(_: number, n: AppNotification) {
     return n.id;
+  }
+
+  unreadCount() {
+    return this.items.reduce((acc, x) => acc + (x.read ? 0 : 1), 0);
   }
 }
