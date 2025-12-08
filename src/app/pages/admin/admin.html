@@ -1,109 +1,141 @@
 <app-header></app-header>
 
-<page-container class="page page--admin">
-  <h1>Panel de Administrador</h1>
-  <h2>Gestión de Usuarios</h2>
-
-  <div *ngIf="loading">Cargando...</div>
-
-  <!-- Tabla de usuarios -->
-  <table *ngIf="!loading && !selectedUser">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let user of allUsers">
-        <td>{{ user.displayName }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-
-        <td>
-          <button (click)="startProgrammerSetup(user)">Crear Perfil Programador</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- Formulario para crear programador -->
-  <div *ngIf="selectedUser" class="form-box">
-    <h2>Crear Perfil para: {{ selectedUser.displayName }}</h2>
-
-    <label>Nombre:</label>
-    <input [(ngModel)]="newProgrammer.name" type="text">
-
-    <label>Especialidad:</label>
-    <input [(ngModel)]="newProgrammer.specialty" type="text">
-
-    <label>Descripción:</label>
-    <textarea [(ngModel)]="newProgrammer.description"></textarea>
-
-    <label>Foto URL:</label>
-    <input [(ngModel)]="newProgrammer.photoURL" type="text">
-
-    <h3>Contactos</h3>
-
-    <label>Email:</label>
-    <input [(ngModel)]="newProgrammer.contactLinks.email" type="text">
-
-    <label>LinkedIn:</label>
-    <input [(ngModel)]="newProgrammer.contactLinks.linkedin" type="text">
-
-    <label>GitHub:</label>
-    <input [(ngModel)]="newProgrammer.contactLinks.github" type="text">
-
-    <label>WhatsApp:</label>
-    <input [(ngModel)]="newProgrammer.contactLinks.whatsapp" type="text">
-
-    <div class="btn-group">
-      <button (click)="saveProgrammerProfile()" class="primary-btn">Guardar</button>
-      <button (click)="selectedUser = null">Cancelar</button>
+<page-container class="page page--admin anim-in">
+  <div class="section-head">
+    <div>
+      <h1>Panel de Administrador</h1>
+      <p>Gestiona usuarios, perfiles de programador y disponibilidad.</p>
     </div>
   </div>
 
-  <!-- DISPONIBILIDAD -->
-  <section class="form-box" style="margin-top:24px;">
-    <h2>Disponibilidad de Programadores</h2>
+  <div class="stack">
+    <section class="card anim-in">
+      <h2>Gestión de Usuarios</h2>
 
-    <label>Programador</label>
-    <select [(ngModel)]="selectedProgrammerId" (change)="loadSlots()">
-      <option value="">-- Selecciona --</option>
-      <option *ngFor="let p of programmers" [value]="p.uid">
-        {{ p.name }}
-      </option>
-    </select>
-
-    <label>Filtrar por fecha (opcional)</label>
-    <input type="date" [(ngModel)]="slotDate" (change)="loadSlots()"/>
-
-    <div class="btn-group" style="align-items:end;">
-      <div style="flex:1;">
-        <label>Hora</label>
-        <input type="time" [(ngModel)]="slotHour"/>
+      <div *ngIf="loading" class="pill pill--neutral" style="margin-top:10px;">
+        Cargando...
       </div>
 
-      <button class="primary-btn" (click)="addSlot()">Agregar hora</button>
-    </div>
+      <table class="table" *ngIf="!loading && !selectedUser">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo electrónico</th>
+            <th>Rol</th>
+            <th style="width: 240px;">Acción</th>
+          </tr>
+        </thead>
 
-    <div style="margin-top:12px;">
-      <div *ngIf="loadingSlots">Cargando horarios...</div>
+        <tbody>
+          <tr *ngFor="let user of allUsers">
+            <td data-label="Nombre">{{ user.displayName }}</td>
+            <td data-label="Correo electrónico">{{ user.email }}</td>
+            <td data-label="Rol"><span class="pill">{{ user.role }}</span></td>
+            <td data-label="Acción">
+              <button class="ghost-btn" (click)="startProgrammerSetup(user)">
+                Crear Perfil Programador
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      <div *ngIf="!loadingSlots && selectedProgrammerId && slots.length === 0">
-        No hay horarios registrados.
-      </div>
+      <div *ngIf="selectedUser" class="form-box anim-in" style="margin-top:14px;">
+        <h2>Crear Perfil para: {{ selectedUser.displayName }}</h2>
 
-      <div *ngIf="!loadingSlots && selectedProgrammerId && slots.length > 0">
-        <div *ngFor="let s of slots"
-             style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #ddd;">
-          <div><b>{{ s.date }}</b> — {{ s.hour }} ({{ s.status }})</div>
-          <button (click)="removeSlot(s)">Eliminar</button>
+        <div class="grid2">
+          <div>
+            <label>Nombre</label>
+            <input [(ngModel)]="newProgrammer.name" type="text">
+          </div>
+
+          <div>
+            <label>Especialidad</label>
+            <input [(ngModel)]="newProgrammer.specialty" type="text">
+          </div>
+        </div>
+
+        <label>Descripción</label>
+        <textarea [(ngModel)]="newProgrammer.description"></textarea>
+
+        <label>Foto URL</label>
+        <input [(ngModel)]="newProgrammer.photoURL" type="text">
+
+        <hr>
+
+        <h3>Contactos</h3>
+        <div class="grid2">
+          <div>
+            <label>Email</label>
+            <input [(ngModel)]="newProgrammer.contactLinks.email" type="text">
+          </div>
+          <div>
+            <label>LinkedIn</label>
+            <input [(ngModel)]="newProgrammer.contactLinks.linkedin" type="text">
+          </div>
+          <div>
+            <label>GitHub</label>
+            <input [(ngModel)]="newProgrammer.contactLinks.github" type="text">
+          </div>
+          <div>
+            <label>WhatsApp</label>
+            <input [(ngModel)]="newProgrammer.contactLinks.whatsapp" type="text">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button (click)="saveProgrammerProfile()" class="primary-btn">Guardar</button>
+          <button (click)="selectedUser = null" class="ghost-btn">Cancelar</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="form-box anim-in">
+      <h2>Disponibilidad de Programadores</h2>
+
+      <div class="grid3" style="margin-top:10px;">
+        <div>
+          <label>Programador</label>
+          <select [(ngModel)]="selectedProgrammerId" (change)="loadSlots()">
+            <option value="">-- Selecciona --</option>
+            <option *ngFor="let p of programmers" [value]="p.uid">{{ p.name }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Filtrar por fecha (opcional)</label>
+          <input type="date" [(ngModel)]="slotDate" (change)="loadSlots()"/>
+        </div>
+
+        <div>
+          <label>Hora</label>
+          <input type="time" [(ngModel)]="slotHour"/>
+        </div>
+      </div>
+
+      <div class="btn-group" style="justify-content:flex-end;">
+        <button class="primary-btn" (click)="addSlot()">Agregar hora</button>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div *ngIf="loadingSlots" class="pill pill--neutral">Cargando horarios...</div>
+
+        <div *ngIf="!loadingSlots && selectedProgrammerId && slots.length === 0" class="card" style="margin-top:10px;">
+          No hay horarios registrados.
+        </div>
+
+        <div *ngIf="!loadingSlots && selectedProgrammerId && slots.length > 0" class="card" style="margin-top:10px; padding:12px;">
+          <div *ngFor="let s of slots" class="slot-row">
+            <div class="slot-left">
+              <b>{{ s.date }}</b>
+              <span class="dot">•</span>
+              <span>{{ s.hour }}</span>
+              <span class="pill">{{ s.status }}</span>
+            </div>
+            <button class="danger-btn" (click)="removeSlot(s)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </page-container>

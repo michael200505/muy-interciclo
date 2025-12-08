@@ -6,6 +6,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './container.html',
-  styleUrls: ['./container.scss']
+  styleUrls: ['./container.scss'],
 })
 export class PageContainerComponent {}

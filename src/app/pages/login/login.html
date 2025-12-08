@@ -1,7 +1,30 @@
 <page-container>
-  <h2>Iniciar sesión</h2>
+  <div class="login-wrapper" @pageIn>
+    <div class="login-card" @cardIn>
+      <div class="brand">
+        <span class="brand__dot"></span>
+        <span class="brand__name">Portafolios</span>
+      </div>
 
-  <button (click)="login()">
-    Continuar con Google
-  </button>
+      <h1>Iniciar sesión</h1>
+      <p class="subtitle">
+        Accede con Google y entra a tu panel según tu rol.
+      </p>
+
+      <button class="google-btn" (click)="login()" [disabled]="loading">
+        <span class="google-btn__icon" aria-hidden="true">G</span>
+        <span class="google-btn__text">
+          {{ loading ? 'Conectando...' : 'Continuar con Google' }}
+        </span>
+        <span class="google-btn__glow" aria-hidden="true"></span>
+      </button>
+
+      <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+      <div class="hint">
+        <span class="hint__chip">Neon</span>
+        <span class="hint__text">Tip: si no abre el popup, revisa que tu navegador no lo bloquee.</span>
+      </div>
+    </div>
+  </div>
 </page-container>

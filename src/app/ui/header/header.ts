@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 import { NotificationService } from '../../core/notification/notification.service';
 
@@ -11,6 +12,20 @@ import { NotificationService } from '../../core/notification/notification.servic
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
+  animations: [
+    trigger('headerIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-8px)' }),
+        animate('420ms cubic-bezier(.2,.8,.2,1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('badgePop', [
+      transition(':enter', [
+        style({ transform: 'scale(.7)', opacity: 0 }),
+        animate('180ms cubic-bezier(.2,1,.2,1)', style({ transform: 'scale(1)', opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private auth = inject(Auth);

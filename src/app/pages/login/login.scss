@@ -1,146 +1,240 @@
-:host,
-page-container {
-  /* Base */
+:host {
   display: block;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #0b1220 0%, #0f1b33 60%, #0b1220 100%);
-  color: #eaf0ff;
-
-  /* Tipografía y rendering */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-.login-wrapper {
-  min-height: 100vh;
+.login-wrapper{
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: clamp(16px, 4vw, 40px);
 }
 
-.login-card {
-  width: min(520px, 100%);
+.login-card{
+  width: min(560px, 100%);
   padding: clamp(20px, 4vw, 36px);
-  border-radius: 20px;
+  border-radius: 22px;
 
-  /* Jerarquía visual + estética minimalista */
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
+  border: 1px solid rgba(255,255,255,.12);
+
   box-shadow:
-    0 18px 60px rgba(0, 0, 0, 0.45),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    0 22px 70px rgba(0,0,0,.55),
+    0 0 24px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 0 24px color-mix(in srgb, var(--accent-2) 14%, transparent);
 
-  /* Legibilidad */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
-  /* Estructura clara */
   display: grid;
   gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
 
-  h1 {
-    margin: 0;
-    font-size: clamp(22px, 2.4vw, 30px);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+/* Animated neon wash */
+.login-card::before{
+  content:"";
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 55%),
+    radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 55%),
+    radial-gradient(circle at 60% 80%, color-mix(in srgb, var(--accent-3) 18%, transparent), transparent 55%);
+  filter: blur(18px);
+  opacity: .7;
+  animation: drift 10s var(--ease-out) infinite alternate;
+  pointer-events: none;
+}
 
-    /* Reconocimiento > recuerdo */
-    display: flex;
-    align-items: center;
-    gap: 10px;
+@keyframes drift{
+  from{ transform: translate3d(-2%, -1%, 0) rotate(-2deg); }
+  to{ transform: translate3d(2%, 1%, 0) rotate(2deg); }
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+
+  .brand__dot{
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 22px color-mix(in srgb, var(--accent-2) 35%, transparent);
   }
 
-  p {
-    margin: 0 0 6px 0;
-    color: rgba(234, 240, 255, 0.82);
-    font-size: 0.98rem;
-    line-height: 1.5;
-  }
-
-  button {
-    /* Consistencia + affordance */
-    appearance: none;
-    border: 0;
-    width: 100%;
-    cursor: pointer;
-
-    /* Tamaño objetivo táctil */
-    min-height: 48px;
-    padding: 12px 16px;
-
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.01em;
-
-    /* Estilo primario */
-    background: linear-gradient(180deg, #ffffff 0%, #e9efff 100%);
-    color: #0b1220;
-
-    box-shadow:
-      0 14px 30px rgba(45, 96, 255, 0.22),
-      0 1px 0 rgba(255, 255, 255, 0.65) inset;
-
-    transition:
-      transform 120ms ease,
-      box-shadow 160ms ease,
-      filter 160ms ease,
-      background 160ms ease;
-
-    /* “Visibilidad del estado del sistema”: hover/active/focus */
-    &:hover {
-      filter: brightness(1.02);
-      box-shadow:
-        0 18px 40px rgba(45, 96, 255, 0.28),
-        0 1px 0 rgba(255, 255, 255, 0.7) inset;
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: translateY(0px) scale(0.99);
-      box-shadow:
-        0 10px 26px rgba(45, 96, 255, 0.2),
-        0 1px 0 rgba(255, 255, 255, 0.55) inset;
-    }
-
-    &:focus-visible {
-      outline: none; /* lo reemplazamos por un focus ring visible */
-      box-shadow:
-        0 0 0 4px rgba(45, 96, 255, 0.25),
-        0 0 0 1px rgba(255, 255, 255, 0.22) inset,
-        0 18px 40px rgba(45, 96, 255, 0.24);
-    }
-
-    &:disabled {
-      /* Prevención de errores */
-      cursor: not-allowed;
-      opacity: 0.6;
-      filter: grayscale(0.2);
-      transform: none;
-      box-shadow: none;
-    }
+  .brand__name{
+    font-weight: 950;
+    letter-spacing: .25px;
+    color: rgba(255,255,255,.92);
   }
 }
 
-/* Responsivo */
-@media (max-width: 420px) {
-  .login-card {
-    border-radius: 16px;
-    gap: 10px;
+h1{
+  margin: 0;
+  position: relative;
+  z-index: 1;
 
-    p {
-      font-size: 0.95rem;
-    }
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
 
-    button {
-      border-radius: 12px;
-    }
+.subtitle{
+  margin: 0 0 6px 0;
+  position: relative;
+  z-index: 1;
+
+  color: rgba(255,255,255,.70);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.google-btn{
+  position: relative;
+  z-index: 1;
+
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.14);
+  width: 100%;
+  cursor: pointer;
+
+  min-height: 52px;
+  padding: 12px 16px;
+
+  border-radius: 16px;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  gap: 10px;
+
+  color: #070A12;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.45),
+    0 0 22px color-mix(in srgb, var(--accent) 24%, transparent);
+
+  transition:
+    transform 140ms var(--ease-pop),
+    box-shadow 220ms var(--ease-out),
+    filter 220ms var(--ease-out);
+
+  .google-btn__icon{
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    display:grid;
+    place-items:center;
+
+    font-weight: 950;
+    background: rgba(255,255,255,.92);
+    box-shadow: 0 10px 18px rgba(0,0,0,.25);
   }
+
+  .google-btn__text{
+    font-weight: 950;
+  }
+
+  .google-btn__glow{
+    position:absolute;
+    inset: -20px;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,.28), transparent 55%);
+    opacity: 0;
+    transition: opacity 220ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  &:hover{
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow:
+      0 22px 54px rgba(0,0,0,.55),
+      0 0 28px color-mix(in srgb, var(--accent-2) 26%, transparent);
+    .google-btn__glow{ opacity: .55; }
+  }
+
+  &:active{
+    transform: translateY(0) scale(.99);
+    filter: brightness(.99);
+  }
+
+  &:focus-visible{
+    outline: none;
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--accent-2) 22%, transparent),
+      0 0 0 1px rgba(255,255,255,.12) inset,
+      0 22px 54px rgba(0,0,0,.50);
+  }
+
+  &:disabled{
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: grayscale(.15);
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.error{
+  margin: 6px 0 0 0;
+  position: relative;
+  z-index: 1;
+
+  color: rgba(255, 173, 190, .95);
+  font-weight: 850;
+  font-size: .95rem;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(244, 63, 94, .25);
+  background: rgba(244, 63, 94, .10);
+}
+
+.hint{
+  position: relative;
+  z-index: 1;
+
+  margin-top: 6px;
+  display:flex;
+  gap: 10px;
+  align-items: center;
+
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+
+  .hint__chip{
+    font-size: 12px;
+    font-weight: 950;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: color-mix(in srgb, var(--accent-2) 10%, rgba(255,255,255,.03));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent-2) 18%, transparent);
+  }
+
+  .hint__text{
+    color: rgba(255,255,255,.68);
+    font-weight: 800;
+    font-size: .9rem;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 420px){
+  .login-card{ border-radius: 18px; gap: 10px; }
+  .google-btn{ border-radius: 14px; }
 }
 
 /* Accesibilidad: reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  .login-card button {
-    transition: none;
-  }
+@media (prefers-reduced-motion: reduce){
+  .login-card::before{ animation: none; }
+  .google-btn{ transition: none; }
 }

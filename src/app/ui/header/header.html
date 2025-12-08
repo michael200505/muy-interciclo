@@ -1,13 +1,16 @@
-<header class="header">
-  <div class="logo" routerLink="/home">Portafolios</div>
+<header class="header" @headerIn>
+  <div class="logo" routerLink="/home">
+    <span class="logo__mark"></span>
+    <span class="logo__text">Portafolios</span>
+  </div>
 
   <nav class="nav">
     <a routerLink="/home" routerLinkActive="active">Inicio</a>
     <a routerLink="/mis-asesorias" routerLinkActive="active">Mis asesorías</a>
 
     <button class="bell" (click)="goNotifications()" title="Notificaciones">
-      🔔
-      <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      <span class="bell__icon">🔔</span>
+      <span class="badge" *ngIf="unreadCount > 0" @badgePop>{{ unreadCount }}</span>
     </button>
 
     <button class="logout-btn" (click)="logout()">Cerrar sesión</button>

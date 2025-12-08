@@ -7,16 +7,13 @@ import {
   collection,
   getDocs,
   query,
-  where
+  where,
 } from '@angular/fire/firestore';
 
 import { AppUser, UserRole } from '../models/user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class UserService {
-
   constructor(private firestore: Firestore) {}
 
   private colRef() {
@@ -29,7 +26,12 @@ export class UserService {
 
   // 🟢 Crear o actualizar usuario cuando inicia sesión
   async ensureUser(
-    firebaseUser: { uid: string; displayName: string | null; email: string | null; photoURL: string | null },
+    firebaseUser: {
+      uid: string;
+      displayName: string | null;
+      email: string | null;
+      photoURL: string | null;
+    },
     defaultRole: UserRole = 'user'
   ): Promise<AppUser> {
     const ref = this.docRef(firebaseUser.uid);
@@ -44,7 +46,7 @@ export class UserService {
         ...data,
         displayName: firebaseUser.displayName || data.displayName,
         email: firebaseUser.email || data.email,
-        photoURL: firebaseUser.photoURL || data.photoURL
+        photoURL: firebaseUser.photoURL || data.photoURL,
       };
     }
 
@@ -54,7 +56,7 @@ export class UserService {
       email: firebaseUser.email || '',
       photoURL: firebaseUser.photoURL || '',
       role: defaultRole,
-      createdAt: now
+      createdAt: now,
     };
 
     await setDoc(ref, newUser);
@@ -72,18 +74,18 @@ export class UserService {
     const q = query(this.colRef(), where('role', '==', 'programmer'));
     const snap = await getDocs(q);
 
-    return snap.docs.map(d => d.data() as AppUser);
+    return snap.docs.map((d) => d.data() as AppUser);
   }
 
-// 🟢 Obtener TODOS los usuarios
-async getAllUsers(): Promise<AppUser[]> {
-  const snap = await getDocs(this.colRef());
+  // 🟢 Obtener TODOS los usuarios
+  async getAllUsers(): Promise<AppUser[]> {
+    const snap = await getDocs(this.colRef());
 
-  return snap.docs.map(d => ({
-    docId: d.id,                 // ← ID del documento (no pisa uid)
-    ...(d.data() as AppUser)     // ← trae uid REAL del usuario
-  }));
-}
+    return snap.docs.map((d) => ({
+      docId: d.id, // ← ID del documento (no pisa uid)
+      ...(d.data() as AppUser), // ← trae uid REAL del usuario
+    }));
+  }
 
   // 🟢 Actualizar usuario
   async updateUser(uid: string, data: Partial<AppUser>): Promise<void> {
