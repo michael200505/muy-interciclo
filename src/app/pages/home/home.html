@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<page-container>
+<page-container class="page page--user">
   <h1 class="page-title">Programadores Disponibles</h1>
 
   <p class="page-subtitle">
@@ -15,9 +15,11 @@
 
   <div class="card-grid" *ngIf="!loading && programmers.length > 0">
     <div class="card" *ngFor="let p of programmers" (click)="openPortfolio(p.uid)">
-      <img class="avatar"
-           [src]="p.photoURL || 'https://via.placeholder.com/64'"
-           alt="Foto de {{ p.name }}" />
+      <img
+        class="avatar"
+        [src]="p.photoURL || 'https://via.placeholder.com/64'"
+        alt="Foto de {{ p.name }}"
+      />
 
       <div class="card-body">
         <h2>{{ p.name }}</h2>

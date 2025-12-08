@@ -1,42 +1,42 @@
 <app-header></app-header>
 
-<page-container>
+<page-container class="page page--programmer">
   <h1>Panel del Programador</h1>
 
   <!-- PROYECTOS -->
- <section class="card">
-  <div class="title-row">
-    <h2>Mis Proyectos</h2>
-    <a class="btn-new" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
-  </div>
+  <section class="card">
+    <div class="title-row">
+      <h2>Mis Proyectos</h2>
+      <a class="btn-new" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
+    </div>
 
-  <div *ngIf="loadingProjects">Cargando proyectos...</div>
-  <div *ngIf="!loadingProjects && projects.length === 0">No tienes proyectos aún.</div>
+    <div *ngIf="loadingProjects">Cargando proyectos...</div>
+    <div *ngIf="!loadingProjects && projects.length === 0">No tienes proyectos aún.</div>
 
-  <div class="project-list" *ngIf="!loadingProjects && projects.length > 0">
-    <div class="project-item" *ngFor="let p of projects">
-      <h3>{{ p.title }}</h3>
-      <p>{{ p.description }}</p>
+    <div class="project-list" *ngIf="!loadingProjects && projects.length > 0">
+      <div class="project-item" *ngFor="let p of projects">
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.description }}</p>
 
-      <div class="meta">
-        <span><b>Tipo:</b> {{ p.type }}</span>
-        <span><b>Rol:</b> {{ p.role }}</span>
-      </div>
+        <div class="meta">
+          <span><b>Tipo:</b> {{ p.type }}</span>
+          <span><b>Rol:</b> {{ p.role }}</span>
+        </div>
 
-      <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
 
-      <div class="links" *ngIf="p.repoURL || p.demoURL">
-        <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
-        <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
-      </div>
+        <div class="links" *ngIf="p.repoURL || p.demoURL">
+          <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
+          <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+        </div>
 
-      <div class="actions">
-        <a class="edit" [routerLink]="['/programmer/edit', p.id]">Editar</a>
-        <button class="delete" (click)="deleteProject(p)">Eliminar</button>
+        <div class="actions">
+          <a class="edit" [routerLink]="['/programmer/edit', p.id]">Editar</a>
+          <button class="delete" (click)="deleteProject(p)">Eliminar</button>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- ASESORÍAS -->
   <section class="card">

@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<page-container>
+<page-container class="page page--public">
   <!-- Estados -->
   <div *ngIf="loading" class="hint">Cargando portafolio...</div>
 
@@ -28,48 +28,47 @@
 
         <!-- CONTACTO / REDES -->
         <div class="contact-grid">
-  <a *ngIf="programmer.contactLinks?.email"
-     [href]="'mailto:' + programmer.contactLinks?.email">
-    ✉️ {{ programmer.contactLinks?.email }}
-  </a>
+          <a *ngIf="programmer.contactLinks?.email"
+             [href]="'mailto:' + programmer.contactLinks?.email">
+            ✉️ {{ programmer.contactLinks?.email }}
+          </a>
 
-  <a *ngIf="programmer.contactLinks?.github"
-     [href]="programmer.contactLinks?.github"
-     target="_blank" rel="noopener">
-    💻 GitHub
-  </a>
+          <a *ngIf="programmer.contactLinks?.github"
+             [href]="programmer.contactLinks?.github"
+             target="_blank" rel="noopener">
+            💻 GitHub
+          </a>
 
-  <a *ngIf="programmer.contactLinks?.linkedin"
-     [href]="programmer.contactLinks?.linkedin"
-     target="_blank" rel="noopener">
-    🔗 LinkedIn
-  </a>
+          <a *ngIf="programmer.contactLinks?.linkedin"
+             [href]="programmer.contactLinks?.linkedin"
+             target="_blank" rel="noopener">
+            🔗 LinkedIn
+          </a>
 
-  <a *ngIf="programmer.contactLinks?.whatsapp"
-     [href]="whatsappLink(programmer.contactLinks?.whatsapp)"
-     target="_blank" rel="noopener">
-    💬 WhatsApp
-  </a>
+          <a *ngIf="programmer.contactLinks?.whatsapp"
+             [href]="whatsappLink(programmer.contactLinks?.whatsapp)"
+             target="_blank" rel="noopener">
+            💬 WhatsApp
+          </a>
 
-  <a *ngIf="programmer.socialLinks?.twitter"
-     [href]="programmer.socialLinks?.twitter"
-     target="_blank" rel="noopener">
-    🐦 Twitter/X
-  </a>
+          <a *ngIf="programmer.socialLinks?.twitter"
+             [href]="programmer.socialLinks?.twitter"
+             target="_blank" rel="noopener">
+            🐦 Twitter/X
+          </a>
 
-  <a *ngIf="programmer.socialLinks?.instagram"
-     [href]="programmer.socialLinks?.instagram"
-     target="_blank" rel="noopener">
-    📸 Instagram
-  </a>
+          <a *ngIf="programmer.socialLinks?.instagram"
+             [href]="programmer.socialLinks?.instagram"
+             target="_blank" rel="noopener">
+            📸 Instagram
+          </a>
 
-  <a *ngIf="programmer.socialLinks?.facebook"
-     [href]="programmer.socialLinks?.facebook"
-     target="_blank" rel="noopener">
-    📘 Facebook
-  </a>
-</div>
-
+          <a *ngIf="programmer.socialLinks?.facebook"
+             [href]="programmer.socialLinks?.facebook"
+             target="_blank" rel="noopener">
+            📘 Facebook
+          </a>
+        </div>
       </div>
     </div>
 

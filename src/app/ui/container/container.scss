@@ -6,8 +6,6 @@
   max-width: 1200px;
   display: block;
   line-height: 1.5;
-  background: var(--page-bg, transparent);
-  color: var(--page-fg, inherit);
 }
 
 /* Permitir clics y escritura SIEMPRE */
@@ -20,7 +18,7 @@
 .page-container :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 3px solid var(--focus-ring, #3b82f6);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 /* Medios responsivos dentro del contenedor */
@@ -29,7 +27,6 @@
   height: auto;
 }
 
-/* Evitar que user-motion rompa interacción */
 @media (prefers-reduced-motion: reduce) {
   .page-container {
     scroll-behavior: auto !important;
