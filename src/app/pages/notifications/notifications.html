@@ -1,34 +1,54 @@
 <app-header></app-header>
 
 <page-container>
-  <div class="topbar">
+  <div class="top">
     <h1>Notificaciones</h1>
-    <button class="btn" (click)="markAllRead()" [disabled]="loading || items.length === 0">
+
+    <button class="btn-link" (click)="markAllRead()" *ngIf="items.length > 0">
       Marcar todas como leídas
     </button>
   </div>
 
-  <div *ngIf="loading" class="hint">Cargando...</div>
+  <div *ngIf="loading">Cargando...</div>
 
-  <div *ngIf="!loading && items.length === 0" class="hint">
+  <div *ngIf="!loading && items.length === 0" class="empty">
     No tienes notificaciones aún.
   </div>
 
   <div class="list" *ngIf="!loading && items.length > 0">
     <div class="card" *ngFor="let n of items; trackBy: trackById" [class.unread]="!n.read">
-      <div class="row">
+      <div class="card-head">
         <div class="title">
-          <span class="dot" *ngIf="!n.read"></span>
-          <b>{{ n.title }}</b>
+          <span class="badge" *ngIf="!n.read">NUEVO</span>
+          <h3>{{ n.title }}</h3>
         </div>
 
-        <button class="small" (click)="markRead(n)" [disabled]="n.read">Marcar leída</button>
+        <div class="meta">
+          {{ n.createdAt ? (n.createdAt | date:'dd/MM/yyyy HH:mm') : '' }}
+        </div>
       </div>
 
       <p class="msg">{{ n.message }}</p>
-      <p class="meta">
-        {{ n.createdAt | date:'medium' }}
-      </p>
+
+      <div class="extra" *ngIf="n.date || n.hour">
+        <span *ngIf="n.date"><b>Fecha:</b> {{ n.date }}</span>
+        <span *ngIf="n.hour"><b>Hora:</b> {{ n.hour }}</span>
+      </div>
+
+      <div class="actions">
+        <button class="btn" (click)="markRead(n)" *ngIf="!n.read">
+          Marcar leído
+        </button>
+
+        <!-- Simulación de envío externo -->
+        <button class="btn ghost" (click)="simulateEmail(n)">
+          Enviar correo
+        </button>
+
+        <button class="btn ghost" (click)="simulateWhatsapp(n)">
+          Enviar WhatsApp
+        </button>
+      </div>
     </div>
   </div>
 </page-container>

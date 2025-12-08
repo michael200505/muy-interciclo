@@ -79,6 +79,31 @@ export class NotificationsComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  // ✅ Simulación de envío externo (NO envía de verdad; solo evidencia el flujo)
+  simulateEmail(n: AppNotification) {
+    console.log('📧 SIMULACIÓN EMAIL:', {
+      toUid: n.toUid,
+      title: n.title,
+      message: n.message,
+      asesoriaId: n.asesoriaId,
+      date: n.date,
+      hour: n.hour
+    });
+    alert('📧 Simulación: "correo enviado" (revisa la consola).');
+  }
+
+  simulateWhatsapp(n: AppNotification) {
+    console.log('📲 SIMULACIÓN WHATSAPP:', {
+      toUid: n.toUid,
+      title: n.title,
+      message: n.message,
+      asesoriaId: n.asesoriaId,
+      date: n.date,
+      hour: n.hour
+    });
+    alert('📲 Simulación: "WhatsApp enviado" (revisa la consola).');
+  }
+
   trackById(_: number, n: AppNotification) {
     return n.id;
   }
