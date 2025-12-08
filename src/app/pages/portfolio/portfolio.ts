@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { animate, style, transition, trigger, query, stagger } from '@angular/animations';
 
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 import { ProjectService } from '../../core/project/project.service';
@@ -11,12 +12,36 @@ import { Project } from '../../core/models/project.model';
 import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
 
+type TabKey = 'academic' | 'professional';
+
 @Component({
   selector: 'app-portfolio',
   standalone: true,
   imports: [CommonModule, HeaderComponent, PageContainerComponent],
   templateUrl: './portfolio.html',
-  styleUrls: ['./portfolio.scss']
+  styleUrls: ['./portfolio.scss'],
+  animations: [
+    trigger('pageIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('520ms cubic-bezier(.2,.8,.2,1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('listIn', [
+      transition(':enter', [
+        query(
+          '.anim-item',
+          [
+            style({ opacity: 0, transform: 'translateY(10px)' }),
+            stagger(70, [
+              animate('420ms cubic-bezier(.2,.8,.2,1)', style({ opacity: 1, transform: 'translateY(0)' })),
+            ]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class PortfolioComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -35,8 +60,10 @@ export class PortfolioComponent implements OnInit {
   loading = true;
   notFound = false;
 
+  activeTab: TabKey = 'professional';
+
   async ngOnInit(): Promise<void> {
-    const uid = this.route.snapshot.paramMap.get('uid'); // ✅ FIX
+    const uid = this.route.snapshot.paramMap.get('uid');
     if (!uid) {
       this.router.navigate(['/home']);
       return;
@@ -48,7 +75,7 @@ export class PortfolioComponent implements OnInit {
 
       const [programmer, projects] = await Promise.all([
         this.programmerService.getProgrammer(uid),
-        this.projectService.getProjectsByUser(uid)
+        this.projectService.getProjectsByUser(uid),
       ]);
 
       if (!programmer) {
@@ -60,11 +87,16 @@ export class PortfolioComponent implements OnInit {
         return;
       }
 
+      const academic = projects.filter((p) => p.type === 'academic');
+      const professional = projects.filter((p) => p.type === 'professional');
+
       this.zone.run(() => {
         this.programmer = programmer;
+        this.academicProjects = academic;
+        this.professionalProjects = professional;
 
-        this.academicProjects = projects.filter(p => p.type === 'academic');
-        this.professionalProjects = projects.filter(p => p.type === 'professional');
+        // Tab por defecto: si hay profesionales, mostrar eso; si no, académicos
+        this.activeTab = professional.length > 0 ? 'professional' : 'academic';
 
         this.loading = false;
         this.notFound = false;
@@ -81,14 +113,21 @@ export class PortfolioComponent implements OnInit {
     }
   }
 
+  setTab(tab: TabKey) {
+    this.activeTab = tab;
+  }
+
   agendar(uid: string) {
     this.router.navigate(['/agendar', uid]);
   }
-whatsappLink(value?: string): string {
-  if (!value) return '';
-  const cleaned = value.replace(/[^\d+]/g, '');
-  return `https://wa.me/${cleaned.replace('+', '')}`;
-}
 
+  whatsappLink(value?: string): string {
+    if (!value) return '';
+    const cleaned = value.replace(/[^\d+]/g, '');
+    return `https://wa.me/${cleaned.replace('+', '')}`;
+  }
 
+  trackById(_: number, p: Project) {
+    return (p as any).id ?? `${p.title}-${p.role}-${p.type}`;
+  }
 }

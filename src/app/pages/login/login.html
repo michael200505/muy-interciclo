@@ -7,23 +7,33 @@
       </div>
 
       <h1>Iniciar sesión</h1>
-      <p class="subtitle">
-        Accede con Google y entra a tu panel según tu rol.
-      </p>
+      <p class="subtitle">Accede con Google y entra a tu panel según tu rol.</p>
 
-      <button class="google-btn" (click)="login()" [disabled]="loading">
-        <span class="google-btn__icon" aria-hidden="true">G</span>
-        <span class="google-btn__text">
-          {{ loading ? 'Conectando...' : 'Continuar con Google' }}
+      <button class="google-btn" (click)="login()" [disabled]="loading" type="button">
+        <span class="google-btn__icon" aria-hidden="true">
+          <!-- Icono Google simple (SVG) -->
+          <svg viewBox="0 0 48 48" width="18" height="18">
+            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.7 3l5.7-5.7C34.6 4.1 29.6 2 24 2 12.9 2 4 10.9 4 22s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.2-.4-3.5z"/>
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.7 3l5.7-5.7C34.6 4.1 29.6 2 24 2 16.3 2 9.6 6.3 6.3 14.7z"/>
+            <path fill="#4CAF50" d="M24 42c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.4 33.5 26.9 34.5 24 34.5c-5.2 0-9.6-3.3-11.2-8l-6.6 5.1C9.5 39.8 16.2 42 24 42z"/>
+            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3-3.4 5.3-6 6.7l6.3 5.2C39.7 36.5 44 31 44 22c0-1.3-.1-2.2-.4-3.5z"/>
+          </svg>
         </span>
+
+        <span class="google-btn__text">
+          {{ loading ? 'Conectando…' : 'Continuar con Google' }}
+        </span>
+
         <span class="google-btn__glow" aria-hidden="true"></span>
       </button>
 
       <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
 
       <div class="hint">
-        <span class="hint__chip">Neon</span>
-        <span class="hint__text">Tip: si no abre el popup, revisa que tu navegador no lo bloquee.</span>
+        <span class="hint__chip">Neón</span>
+        <span class="hint__text">
+          Consejo: si no abre el popup, revisa que tu navegador no lo bloquee.
+        </span>
       </div>
     </div>
   </div>

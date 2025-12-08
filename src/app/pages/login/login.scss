@@ -97,29 +97,25 @@ h1{
   position: relative;
   z-index: 1;
 
-  appearance: none;
-  border: 1px solid rgba(255,255,255,.14);
   width: 100%;
-  cursor: pointer;
-
   min-height: 52px;
+
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+
+  gap: 12px;
   padding: 12px 16px;
 
   border-radius: 16px;
-  font-weight: 900;
+  font-weight: 950;
   font-size: 1rem;
-  letter-spacing: 0.01em;
 
-  display:flex;
-  align-items:center;
-  justify-content: center;
-  gap: 10px;
-
-  color: #070A12;
+  border: 1px solid rgba(255,255,255,.14);
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow:
-    0 18px 40px rgba(0,0,0,.45),
-    0 0 22px color-mix(in srgb, var(--accent) 24%, transparent);
+  color: #070A12;
+
+  box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 0 22px color-mix(in srgb, var(--accent) 24%, transparent);
 
   transition:
     transform 140ms var(--ease-pop),
@@ -127,19 +123,21 @@ h1{
     filter 220ms var(--ease-out);
 
   .google-btn__icon{
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
     display:grid;
     place-items:center;
 
-    font-weight: 950;
     background: rgba(255,255,255,.92);
     box-shadow: 0 10px 18px rgba(0,0,0,.25);
   }
 
   .google-btn__text{
-    font-weight: 950;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .google-btn__glow{
@@ -150,6 +148,28 @@ h1{
     transition: opacity 220ms var(--ease-out);
     pointer-events: none;
   }
+
+  &:hover{
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow: 0 22px 54px rgba(0,0,0,.55), 0 0 28px color-mix(in srgb, var(--accent-2) 26%, transparent);
+    .google-btn__glow{ opacity: .55; }
+  }
+
+  &:active{
+    transform: translateY(0) scale(.99);
+    filter: brightness(.99);
+  }
+
+  &:disabled{
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: grayscale(.15);
+    transform: none;
+    box-shadow: none;
+  }
+
+
 
   &:hover{
     transform: translateY(-1px);

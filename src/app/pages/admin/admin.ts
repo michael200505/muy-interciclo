@@ -1,11 +1,15 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 import { UserService } from '../../core/user/user.service';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 
-import { AvailabilityService, AvailabilitySlot } from '../../core/availability/availability.service';
+import {
+  AvailabilityService,
+  AvailabilitySlot,
+} from '../../core/availability/availability.service';
 import { ProgrammerProfile } from '../../core/models/programmer.model';
 
 import { AppUser } from '../../core/models/user.model';
@@ -17,7 +21,27 @@ import { PageContainerComponent } from '../../ui/container/container';
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
   templateUrl: './admin.html',
-  styleUrls: ['./admin.scss']
+  styleUrls: ['./admin.scss'],
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px)' }),
+        animate(
+          '520ms cubic-bezier(.2,.8,.2,1)',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
+      ]),
+    ]),
+    trigger('panelIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px) scale(.99)' }),
+        animate(
+          '560ms cubic-bezier(.2,.8,.2,1)',
+          style({ opacity: 1, transform: 'translateY(0) scale(1)' })
+        ),
+      ]),
+    ]),
+  ],
 })
 export class AdminPanelComponent implements OnInit {
   private userService = inject(UserService);
@@ -36,7 +60,7 @@ export class AdminPanelComponent implements OnInit {
     description: '',
     photoURL: '',
     contactLinks: { email: '', linkedin: '', github: '', whatsapp: '' },
-    socialLinks: {}
+    socialLinks: {},
   };
 
   // Disponibilidad
@@ -48,7 +72,7 @@ export class AdminPanelComponent implements OnInit {
   loadingSlots = false;
 
   ngOnInit() {
-    console.log("🟩 ADMIN PANEL INICIADO");
+    console.log('🟩 ADMIN PANEL INICIADO');
     this.loadUsers();
     this.loadProgrammers();
   }
@@ -60,9 +84,9 @@ export class AdminPanelComponent implements OnInit {
     try {
       const users = await this.userService.getAllUsers();
       this.allUsers = [...users];
-      console.log("Usuarios cargados:", this.allUsers);
+      console.log('Usuarios cargados:', this.allUsers);
     } catch (e) {
-      console.error("ERROR obteniendo usuarios:", e);
+      console.error('ERROR obteniendo usuarios:', e);
     } finally {
       this.loading = false;
       this.cdr.detectChanges();
@@ -91,9 +115,9 @@ export class AdminPanelComponent implements OnInit {
         email: user.email || '',
         linkedin: '',
         github: '',
-        whatsapp: ''
+        whatsapp: '',
       },
-      socialLinks: {}
+      socialLinks: {},
     };
   }
 
@@ -103,7 +127,7 @@ export class AdminPanelComponent implements OnInit {
     await this.userService.updateRole(this.selectedUser.uid, 'programmer');
     await this.programmerService.saveProgrammer(this.newProgrammer);
 
-    alert("✔ Programador guardado correctamente");
+    alert('✔ Programador guardado correctamente');
 
     this.selectedUser = null;
     await this.loadUsers();
@@ -118,8 +142,13 @@ export class AdminPanelComponent implements OnInit {
 
     try {
       const date = this.slotDate ? this.slotDate : undefined;
-      const all = await this.availabilityService.getSlots(this.selectedProgrammerId, date);
-      this.slots = all.sort((a, b) => (a.date + a.hour).localeCompare(b.date + b.hour));
+      const all = await this.availabilityService.getSlots(
+        this.selectedProgrammerId,
+        date
+      );
+      this.slots = all.sort((a, b) =>
+        (a.date + a.hour).localeCompare(b.date + b.hour)
+      );
     } catch (e) {
       console.error('Error cargando slots:', e);
       this.slots = [];
@@ -135,7 +164,11 @@ export class AdminPanelComponent implements OnInit {
       return;
     }
 
-    await this.availabilityService.addSlot(this.selectedProgrammerId, this.slotDate, this.slotHour);
+    await this.availabilityService.addSlot(
+      this.selectedProgrammerId,
+      this.slotDate,
+      this.slotHour
+    );
     this.slotHour = '';
     await this.loadSlots();
   }

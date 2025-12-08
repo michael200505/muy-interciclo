@@ -2,6 +2,7 @@ import { Component, inject, OnInit, ChangeDetectorRef, NgZone } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { Auth } from '@angular/fire/auth';
 import { Router, RouterModule } from '@angular/router';
+import { animate, style, transition, trigger, query, stagger } from '@angular/animations';
 
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
 import { Asesoria } from '../../core/models/asesoria.model';
@@ -19,6 +20,31 @@ import { PageContainerComponent } from '../../ui/container/container';
   imports: [CommonModule, RouterModule, HeaderComponent, PageContainerComponent],
   templateUrl: './programmer.html',
   styleUrls: ['./programmer.scss'],
+  animations: [
+    trigger('pageIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('520ms cubic-bezier(.2,.8,.2,1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('listIn', [
+      transition(':enter', [
+        query(
+          '.anim-item',
+          [
+            style({ opacity: 0, transform: 'translateY(10px)' }),
+            stagger(60, [
+              animate(
+                '420ms cubic-bezier(.2,.8,.2,1)',
+                style({ opacity: 1, transform: 'translateY(0)' })
+              ),
+            ]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class ProgrammerPanelComponent implements OnInit {
   private asesoriaService = inject(AsesoriaService);
@@ -134,7 +160,7 @@ export class ProgrammerPanelComponent implements OnInit {
     if (!ok) return;
 
     await this.projectService.deleteProject(p.id);
-    this.projects = this.projects.filter(x => x.id !== p.id);
+    this.projects = this.projects.filter((x) => x.id !== p.id);
     this.cdr.detectChanges();
   }
 }

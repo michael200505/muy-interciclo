@@ -1,31 +1,79 @@
 <app-header></app-header>
 
-<page-container class="page page--user">
-  <h1 class="page-title">Programadores Disponibles</h1>
+<page-container class="page page--user" @pageIn>
+  <div class="hero">
+    <div>
+      <h1 class="title">
+        <span class="title__spark" aria-hidden="true"></span>
+        Programadores disponibles
+      </h1>
 
-  <p class="page-subtitle">
-    Explora portafolios y agenda una asesoría con el programador que mejor se ajusta a tu necesidad.
-  </p>
+      <p class="subtitle">
+        Explora portafolios y agenda una asesoría con el programador que mejor se ajusta a tu necesidad.
+      </p>
+    </div>
 
-  <div *ngIf="loading" class="page-subtitle">Cargando programadores...</div>
+    <div class="hero__meta">
+      <span class="pill pill--neutral" *ngIf="loading">Cargando…</span>
+      <span class="pill pill--ok" *ngIf="!loading">{{ programmers.length }} disponibles</span>
+    </div>
+  </div>
 
-  <div *ngIf="!loading && programmers.length === 0" class="page-subtitle">
+  <!-- Skeleton -->
+  <div class="grid" *ngIf="loading">
+    <div class="card sk anim-item" *ngFor="let _ of [1,2,3,4,5,6]">
+      <div class="sk__avatar"></div>
+      <div class="sk__lines">
+        <div class="sk__line sk__line--a"></div>
+        <div class="sk__line sk__line--b"></div>
+        <div class="sk__line sk__line--c"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && programmers.length === 0" class="empty card">
     No hay programadores registrados todavía.
   </div>
 
-  <div class="card-grid" *ngIf="!loading && programmers.length > 0">
-    <div class="card" *ngFor="let p of programmers" (click)="openPortfolio(p.uid)">
-      <img
-        class="avatar"
-        [src]="p.photoURL || 'https://via.placeholder.com/64'"
-        alt="Foto de {{ p.name }}"
-      />
+  <!-- List -->
+  <div class="grid" *ngIf="!loading && programmers.length > 0" @listIn>
+    <article
+      class="card pcard anim-item"
+      *ngFor="let p of programmers; trackBy: trackByUid"
+      tabindex="0"
+      role="button"
+      (click)="openPortfolio(p.uid)"
+      (keydown.enter)="openPortfolio(p.uid)"
+      (keydown.space)="$event.preventDefault(); openPortfolio(p.uid)"
+      [attr.aria-label]="'Abrir portafolio de ' + p.name"
+    >
+      <div class="pcard__top">
+        <img
+          class="avatar"
+          [src]="p.photoURL || 'https://via.placeholder.com/96'"
+          alt="Foto de {{ p.name }}"
+          loading="lazy"
+        />
 
-      <div class="card-body">
-        <h2>{{ p.name }}</h2>
-        <p class="specialty">{{ p.specialty || 'Especialidad no especificada' }}</p>
-        <p class="description">{{ p.description || 'Sin descripción.' }}</p>
+        <div class="pcard__head">
+          <h2 class="name" title="{{ p.name }}">{{ p.name }}</h2>
+          <p class="specialty">{{ p.specialty || 'Especialidad no especificada' }}</p>
+        </div>
+
+        <span class="chev" aria-hidden="true">›</span>
       </div>
-    </div>
+
+      <p class="desc">{{ p.description || 'Sin descripción.' }}</p>
+
+      <div class="pcard__actions">
+        <button type="button" class="ghost-btn" (click)="$event.stopPropagation(); openPortfolio(p.uid)">
+          Ver perfil
+        </button>
+        <span class="pill pill--neutral">Portafolio</span>
+      </div>
+
+      <span class="pcard__glow" aria-hidden="true"></span>
+    </article>
   </div>
 </page-container>

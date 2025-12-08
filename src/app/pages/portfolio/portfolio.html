@@ -1,122 +1,178 @@
 <app-header></app-header>
 
-<page-container class="page page--public">
+<page-container class="page page--public" @pageIn>
   <!-- Estados -->
-  <div *ngIf="loading" class="hint">Cargando portafolio...</div>
+  <div *ngIf="loading" class="pill pill--neutral">Cargando portafolio…</div>
 
-  <div *ngIf="!loading && notFound" class="hint">
-    Portafolio no encontrado.
+  <div *ngIf="!loading && notFound" class="empty card">
+    <h2>Portafolio no encontrado</h2>
+    <p class="muted">El usuario no existe o no tiene un perfil de programador creado.</p>
+    <div class="btn-group">
+      <button class="ghost-btn" routerLink="/home">Volver a Home</button>
+    </div>
   </div>
 
   <ng-container *ngIf="!loading && programmer">
-    <!-- PERFIL -->
-    <div class="portfolio-header">
-      <img
-        [src]="programmer.photoURL || 'https://via.placeholder.com/96'"
-        alt="Foto de {{ programmer.name }}"
-        class="avatar-lg"
-      />
+    <!-- HERO -->
+    <section class="hero card anim-in">
+      <div class="hero__glow" aria-hidden="true"></div>
 
-      <div class="profile-info">
-        <h1>{{ programmer.name }}</h1>
-        <p class="specialty">{{ programmer.specialty }}</p>
-        <p class="description">{{ programmer.description }}</p>
+      <div class="hero__top">
+        <img
+          class="avatar-lg"
+          [src]="programmer.photoURL || 'https://via.placeholder.com/160'"
+          alt="Foto de {{ programmer.name }}"
+          loading="lazy"
+        />
 
-        <div class="cta-row">
-          <button (click)="agendar(programmer.uid)">Agendar asesoría</button>
-        </div>
+        <div class="hero__info">
+          <div class="hero__nameRow">
+            <h1 class="hero__name">{{ programmer.name }}</h1>
+            <span class="pill pill--neutral">Programador</span>
+          </div>
 
-        <!-- CONTACTO / REDES -->
-        <div class="contact-grid">
-          <a *ngIf="programmer.contactLinks?.email"
-             [href]="'mailto:' + programmer.contactLinks?.email">
-            ✉️ {{ programmer.contactLinks?.email }}
-          </a>
+          <p class="hero__spec">{{ programmer.specialty || 'Especialidad no especificada' }}</p>
+          <p class="hero__desc">{{ programmer.description || 'Sin descripción.' }}</p>
 
-          <a *ngIf="programmer.contactLinks?.github"
-             [href]="programmer.contactLinks?.github"
-             target="_blank" rel="noopener">
-            💻 GitHub
-          </a>
+          <div class="hero__cta">
+            <button class="primary-btn" (click)="agendar(programmer.uid)">
+              Agendar asesoría
+            </button>
+            <button class="ghost-btn" routerLink="/home">Ver otros</button>
+          </div>
 
-          <a *ngIf="programmer.contactLinks?.linkedin"
-             [href]="programmer.contactLinks?.linkedin"
-             target="_blank" rel="noopener">
-            🔗 LinkedIn
-          </a>
+          <!-- CONTACTOS -->
+          <div class="chips">
+            <a *ngIf="programmer.contactLinks?.email"
+               class="chip"
+               [href]="'mailto:' + programmer.contactLinks?.email">
+              ✉️ <span class="chip__text">{{ programmer.contactLinks?.email }}</span>
+            </a>
 
-          <a *ngIf="programmer.contactLinks?.whatsapp"
-             [href]="whatsappLink(programmer.contactLinks?.whatsapp)"
-             target="_blank" rel="noopener">
-            💬 WhatsApp
-          </a>
+            <a *ngIf="programmer.contactLinks?.github"
+               class="chip"
+               [href]="programmer.contactLinks?.github"
+               target="_blank" rel="noopener">
+              💻 <span class="chip__text">GitHub</span>
+            </a>
 
-          <a *ngIf="programmer.socialLinks?.twitter"
-             [href]="programmer.socialLinks?.twitter"
-             target="_blank" rel="noopener">
-            🐦 Twitter/X
-          </a>
+            <a *ngIf="programmer.contactLinks?.linkedin"
+               class="chip"
+               [href]="programmer.contactLinks?.linkedin"
+               target="_blank" rel="noopener">
+              🔗 <span class="chip__text">LinkedIn</span>
+            </a>
 
-          <a *ngIf="programmer.socialLinks?.instagram"
-             [href]="programmer.socialLinks?.instagram"
-             target="_blank" rel="noopener">
-            📸 Instagram
-          </a>
+            <a *ngIf="programmer.contactLinks?.whatsapp"
+               class="chip chip--ok"
+               [href]="whatsappLink(programmer.contactLinks?.whatsapp)"
+               target="_blank" rel="noopener">
+              💬 <span class="chip__text">WhatsApp</span>
+            </a>
 
-          <a *ngIf="programmer.socialLinks?.facebook"
-             [href]="programmer.socialLinks?.facebook"
-             target="_blank" rel="noopener">
-            📘 Facebook
-          </a>
-        </div>
-      </div>
-    </div>
+            <a *ngIf="programmer.socialLinks?.twitter"
+               class="chip"
+               [href]="programmer.socialLinks?.twitter"
+               target="_blank" rel="noopener">
+              🐦 <span class="chip__text">Twitter/X</span>
+            </a>
 
-    <hr>
+            <a *ngIf="programmer.socialLinks?.instagram"
+               class="chip"
+               [href]="programmer.socialLinks?.instagram"
+               target="_blank" rel="noopener">
+              📸 <span class="chip__text">Instagram</span>
+            </a>
 
-    <!-- PROYECTOS ACADÉMICOS -->
-    <h2>Proyectos Académicos</h2>
-    <div *ngIf="academicProjects.length === 0" class="hint">
-      No hay proyectos académicos todavía.
-    </div>
-
-    <div class="project-list" *ngIf="academicProjects.length > 0">
-      <div class="project-card" *ngFor="let p of academicProjects">
-        <h3>{{ p.title }}</h3>
-        <p>{{ p.description }}</p>
-
-        <p><b>Rol:</b> {{ p.role }}</p>
-        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
-
-        <div class="links">
-          <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
-          <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+            <a *ngIf="programmer.socialLinks?.facebook"
+               class="chip"
+               [href]="programmer.socialLinks?.facebook"
+               target="_blank" rel="noopener">
+              📘 <span class="chip__text">Facebook</span>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <hr>
+    <!-- TABS -->
+    <section class="tabs card">
+      <button
+        type="button"
+        class="tab"
+        [class.active]="activeTab === 'professional'"
+        (click)="setTab('professional')">
+        Profesionales
+        <span class="pill pill--neutral">{{ professionalProjects.length }}</span>
+      </button>
 
-    <!-- PROYECTOS PROFESIONALES -->
-    <h2>Proyectos Profesionales</h2>
-    <div *ngIf="professionalProjects.length === 0" class="hint">
-      No hay proyectos profesionales todavía.
-    </div>
+      <button
+        type="button"
+        class="tab"
+        [class.active]="activeTab === 'academic'"
+        (click)="setTab('academic')">
+        Académicos
+        <span class="pill pill--neutral">{{ academicProjects.length }}</span>
+      </button>
+    </section>
 
-    <div class="project-list" *ngIf="professionalProjects.length > 0">
-      <div class="project-card" *ngFor="let p of professionalProjects">
-        <h3>{{ p.title }}</h3>
-        <p>{{ p.description }}</p>
-
-        <p><b>Rol:</b> {{ p.role }}</p>
-        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
-
-        <div class="links">
-          <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
-          <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+    <!-- LIST -->
+    <section class="stack" @listIn>
+      <!-- Profesionales -->
+      <ng-container *ngIf="activeTab === 'professional'">
+        <div *ngIf="professionalProjects.length === 0" class="empty card">
+          No hay proyectos profesionales todavía.
         </div>
-      </div>
-    </div>
 
+        <div class="project-grid" *ngIf="professionalProjects.length > 0">
+          <article class="project-card anim-item" *ngFor="let p of professionalProjects; trackBy: trackById">
+            <div class="project-top">
+              <h3>{{ p.title }}</h3>
+              <span class="pill pill--neutral">Profesional</span>
+            </div>
+
+            <p class="muted">{{ p.description }}</p>
+
+            <div class="meta">
+              <span><b>Rol:</b> {{ p.role }}</span>
+              <span><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</span>
+            </div>
+
+            <div class="links" *ngIf="p.repoURL || p.demoURL">
+              <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
+              <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+            </div>
+          </article>
+        </div>
+      </ng-container>
+
+      <!-- Académicos -->
+      <ng-container *ngIf="activeTab === 'academic'">
+        <div *ngIf="academicProjects.length === 0" class="empty card">
+          No hay proyectos académicos todavía.
+        </div>
+
+        <div class="project-grid" *ngIf="academicProjects.length > 0">
+          <article class="project-card anim-item" *ngFor="let p of academicProjects; trackBy: trackById">
+            <div class="project-top">
+              <h3>{{ p.title }}</h3>
+              <span class="pill pill--neutral">Académico</span>
+            </div>
+
+            <p class="muted">{{ p.description }}</p>
+
+            <div class="meta">
+              <span><b>Rol:</b> {{ p.role }}</span>
+              <span><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</span>
+            </div>
+
+            <div class="links" *ngIf="p.repoURL || p.demoURL">
+              <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
+              <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+            </div>
+          </article>
+        </div>
+      </ng-container>
+    </section>
   </ng-container>
 </page-container>

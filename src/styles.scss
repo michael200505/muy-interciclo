@@ -9,6 +9,11 @@
   --radius: 14px;
   --radius-lg: 22px;
 
+  --accent-3: #22d3ee; /* cyan glow extra */
+--glow: 0 0 22px color-mix(in srgb, var(--accent) 28%, transparent);
+--glow-2: 0 0 26px color-mix(in srgb, var(--accent-2) 22%, transparent);
+
+
   /* Neon core */
   --bg: #070A12;
   --bg-2: #050712;

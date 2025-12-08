@@ -1,235 +1,244 @@
-/* ==========================================================================
-   Programadores disponibles — SCSS (heurísticas UX + accesibilidad)
-   - Legibilidad: jerarquía clara, líneas no demasiado largas
-   - Consistencia: escala de espacios/typography
-   - Af. visual: cards uniformes, grid responsivo
-   - Feedback: hover/focus visibles, estados “clickeable”
-   - Accesibilidad: contraste, focus-ring, reduce motion
-   ========================================================================== */
-
-:host {
-  /* Design tokens (ajusta a tu sistema) */
-  --bg: #0b1220;
-  --surface: rgba(255, 255, 255, 0.06);
-  --surface-2: rgba(255, 255, 255, 0.09);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.72);
-  --muted-2: rgba(255, 255, 255, 0.56);
-  --accent: #6ee7ff;
-  --accent-2: #a78bfa;
-
-  --radius: 18px;
-  --radius-sm: 14px;
-
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-  --shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.36);
-
-  --space-1: 6px;
-  --space-2: 10px;
-  --space-3: 14px;
-  --space-4: 18px;
-  --space-5: 24px;
-  --space-6: 32px;
-
-  display: block;
-  color: var(--text);
+:host{
+  display:block;
+  min-height: 100dvh;
 }
 
-/* Contenedor principal */
-page-container {
-  display: block;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: clamp(18px, 2.5vw, 36px);
+/* Asegura separación del header sticky */
+:host ::ng-deep page-container.page--user{
+  padding-top: 26px;
 }
 
-/* Titular + subtítulo */
-.page-title {
-  margin: 0 0 var(--space-2);
-  font-size: clamp(1.4rem, 2.5vw, 2.05rem);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+/* Hero */
+.hero{
+  display:flex;
+  align-items:flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 8px 0 18px;
 }
 
-.page-subtitle {
-  margin: 0 0 var(--space-6);
-  max-width: 70ch; /* heurística: longitud cómoda de lectura */
+.title{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  margin: 0 0 6px 0;
+
+  .title__spark{
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: var(--glow), var(--glow-2);
+  }
+}
+
+.subtitle{
+  margin: 0;
+  max-width: 80ch;
   color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.55;
+  font-weight: 800;
 }
 
-/* Grid responsivo */
-.card-grid {
-  display: grid;
+.hero__meta{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+
+/* Grid */
+.grid{
+  display:grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-4);
-
-  /* cada card ocupa columnas fluidas */
-  .card {
-    grid-column: span 12;
-  }
-
-  @media (min-width: 560px) {
-    .card {
-      grid-column: span 6;
-    }
-  }
-
-  @media (min-width: 920px) {
-    .card {
-      grid-column: span 4;
-    }
-  }
+  gap: 14px;
 }
 
-/* Card clickeable */
-.card {
-  position: relative;
-  display: grid;
-  grid-template-columns: 64px 1fr;
-  gap: var(--space-4);
-  align-items: start;
+.pcard, .sk{
+  grid-column: span 12;
+}
 
-  padding: var(--space-5);
-  border-radius: var(--radius);
-  background: linear-gradient(180deg, var(--surface), rgba(255, 255, 255, 0.03));
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+@media (min-width: 620px){
+  .pcard, .sk{ grid-column: span 6; }
+}
+
+@media (min-width: 980px){
+  .pcard, .sk{ grid-column: span 4; }
+}
+
+/* Card */
+.pcard{
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 16px 46px rgba(0,0,0,.40);
+
+  padding: 14px;
 
   cursor: pointer;
   user-select: none;
 
-  /* “Afordancia” de clic */
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 180ms ease;
-    background: radial-gradient(
-      600px circle at 20% 10%,
-      rgba(110, 231, 255, 0.14),
-      transparent 45%
-    );
-  }
-
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    border-color 180ms ease,
-    background 180ms ease;
+    transform var(--t) var(--ease-out),
+    box-shadow var(--t) var(--ease-out),
+    border-color var(--t) var(--ease-out);
 
-  &:hover {
+  &:hover{
     transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-    border-color: rgba(110, 231, 255, 0.28);
-
-    &::after {
-      opacity: 1;
-    }
+    border-color: color-mix(in srgb, var(--accent-2) 26%, rgba(255,255,255,.12));
+    box-shadow: 0 26px 80px rgba(0,0,0,.55), var(--glow-2);
   }
 
-  /* Accesibilidad: si el div recibe focus (p.ej. tabindex en TS/HTML) */
-  &:focus,
-  &:focus-within {
+  &:focus-visible{
     outline: none;
-  }
-
-  &:focus-visible {
-    outline: 3px solid rgba(110, 231, 255, 0.65);
-    outline-offset: 3px;
-  }
-
-  &:active {
-    transform: translateY(0px) scale(0.99);
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--accent-2) 22%, transparent),
+      0 0 0 1px rgba(255,255,255,.12) inset,
+      0 26px 80px rgba(0,0,0,.55);
   }
 }
 
-/* Avatar */
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
+.pcard__glow{
+  position:absolute;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%),
+    radial-gradient(circle at 80% 10%, color-mix(in srgb, var(--accent-2) 16%, transparent), transparent 55%);
+  filter: blur(18px);
+  opacity: .55;
+  pointer-events: none;
+}
+
+.pcard__top{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  position: relative;
+  z-index: 1;
+}
+
+.avatar{
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
   object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
-
-  /* evita saltos visuales si la imagen carga tarde */
-  display: block;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
 }
 
-/* Cuerpo */
-.card-body {
-  min-width: 0; /* importante para ellipsis */
-
-  h2 {
-    margin: 0 0 var(--space-1);
-    font-size: 1.05rem;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-
-    /* evita desbordes en nombres largos */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .specialty {
-    margin: 0 0 var(--space-2);
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.94rem;
-  }
-
-  .description {
-    margin: 0;
-    color: var(--muted-2);
-    font-size: 0.95rem;
-    line-height: 1.5;
-
-    /* heurística: controla altura para uniformidad */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+.pcard__head{
+  min-width: 0;
+  flex: 1;
 }
 
-/* Reduce Motion (heurística: respeta preferencias del usuario) */
-@media (prefers-reduced-motion: reduce) {
-  .card {
-    transition: none;
-    &::after {
-      transition: none;
-    }
-    &:hover {
-      transform: none;
-    }
-    &:active {
-      transform: none;
-    }
-  }
+.name{
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Modo claro opcional (si tu app lo usa) */
-@media (prefers-color-scheme: light) {
-  :host {
-    --bg: #f7f8fc;
-    --surface: rgba(15, 23, 42, 0.05);
-    --surface-2: rgba(15, 23, 42, 0.07);
-    --border: rgba(15, 23, 42, 0.12);
-    --text: rgba(15, 23, 42, 0.92);
-    --muted: rgba(15, 23, 42, 0.72);
-    --muted-2: rgba(15, 23, 42, 0.62);
-    --shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
-    --shadow-hover: 0 14px 30px rgba(15, 23, 42, 0.16);
-  }
+.specialty{
+  margin: 4px 0 0 0;
+  color: color-mix(in srgb, var(--accent-2) 65%, rgba(255,255,255,.92));
+  font-weight: 900;
+  font-size: .95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-:host {
-  background: var(--bg);
-  min-height: 100vh;
+
+.chev{
+  font-size: 28px;
+  line-height: 1;
+  opacity: .7;
+  transform: translateY(-1px);
+}
+
+.desc{
+  position: relative;
+  z-index: 1;
+
+  margin: 12px 0 0 0;
+  color: rgba(255,255,255,.74);
+  font-weight: 750;
+  line-height: 1.5;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 4.4em;
+}
+
+.pcard__actions{
+  position: relative;
+  z-index: 1;
+
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Empty */
+.empty{
+  color: var(--muted);
+}
+
+/* Skeleton */
+.sk{
+  border-radius: 22px;
+  padding: 14px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 12px 34px rgba(0,0,0,.32);
+
+  display:flex;
+  gap: 12px;
+  align-items:center;
+}
+
+.sk__avatar{
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.09), rgba(255,255,255,.04));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s var(--ease-out) infinite;
+}
+
+.sk__lines{
+  flex: 1;
+  display:grid;
+  gap: 10px;
+}
+
+.sk__line{
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.09), rgba(255,255,255,.04));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s var(--ease-out) infinite;
+}
+
+.sk__line--a{ width: 55%; height: 14px; }
+.sk__line--b{ width: 78%; }
+.sk__line--c{ width: 64%; }
+
+@keyframes shimmer{
+  from{ background-position: 0% 0%; }
+  to{ background-position: 200% 0%; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .pcard, .sk__avatar, .sk__line{ animation: none !important; transition: none !important; }
 }
