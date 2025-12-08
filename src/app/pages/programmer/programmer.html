@@ -1,56 +1,30 @@
 <app-header></app-header>
 
-<page-container class="page page--programmer" @pageIn>
-  <div class="hero">
-    <div>
-      <h1 class="title">
-        <span class="title__spark" aria-hidden="true"></span>
-        Panel del Programador
-      </h1>
-      <p class="subtitle">Gestiona tus proyectos y responde solicitudes de asesorías.</p>
-    </div>
-
-    <a class="btn-new" routerLink="/programmer/new-project">
-      + Nuevo Proyecto
-      <span class="btn-new__glow" aria-hidden="true"></span>
-    </a>
-  </div>
+<page-container class="page page--programmer anim-in">
+  <h1>Panel del Programador</h1>
 
   <!-- PROYECTOS -->
-  <section class="card" @listIn>
-    <div class="section-head">
+  <section class="card">
+    <div class="title-row">
       <div>
         <h2>Mis Proyectos</h2>
-        <p>Agrega, edita y comparte tus trabajos.</p>
+        <p class="sub">Gestiona tus proyectos publicados.</p>
       </div>
 
-      <div class="right">
-        <span class="pill pill--neutral" *ngIf="loadingProjects">Cargando…</span>
-        <span class="pill pill--ok" *ngIf="!loadingProjects">Listo</span>
-      </div>
+      <a class="btn-new" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
     </div>
 
-    <div *ngIf="loadingProjects" class="skeleton">
-      <div class="sk-card" *ngFor="let _ of [1,2,3]">
-        <div class="sk sk-title"></div>
-        <div class="sk sk-line"></div>
-        <div class="sk sk-line"></div>
-        <div class="sk sk-chip"></div>
-      </div>
-    </div>
-
-    <div *ngIf="!loadingProjects && projects.length === 0" class="empty card">
-      No tienes proyectos aún. Crea tu primer proyecto con el botón “Nuevo Proyecto”.
-    </div>
+    <div *ngIf="loadingProjects" class="hint">Cargando proyectos...</div>
+    <div *ngIf="!loadingProjects && projects.length === 0" class="hint">No tienes proyectos aún.</div>
 
     <div class="project-grid" *ngIf="!loadingProjects && projects.length > 0">
-      <div class="project-item anim-item" *ngFor="let p of projects">
-        <div class="project-top">
-          <h3>{{ p.title }}</h3>
-          <span class="pill pill--neutral">{{ p.type }}</span>
+      <article class="project" *ngFor="let p of projects">
+        <div class="project-head">
+          <h3 title="{{ p.title }}">{{ p.title }}</h3>
+          <span class="pill">{{ p.type }}</span>
         </div>
 
-        <p class="muted">{{ p.description }}</p>
+        <p class="desc">{{ p.description }}</p>
 
         <div class="meta">
           <span><b>Rol:</b> {{ p.role }}</span>
@@ -63,62 +37,54 @@
         </div>
 
         <div class="actions">
-          <a class="ghost-link" [routerLink]="['/programmer/edit', p.id]">Editar</a>
-          <button class="danger-btn" (click)="deleteProject(p)">Eliminar</button>
+          <a class="edit" [routerLink]="['/programmer/edit', p.id]">Editar</a>
+          <button class="delete" (click)="deleteProject(p)">Eliminar</button>
         </div>
-      </div>
+      </article>
     </div>
   </section>
 
   <!-- ASESORÍAS -->
-  <section class="card" @listIn>
-    <div class="section-head">
+  <section class="card">
+    <div class="title-row">
       <div>
         <h2>Solicitudes de Asesorías</h2>
-        <p>Aprueba o rechaza las solicitudes pendientes.</p>
+        <p class="sub">Aprueba o rechaza solicitudes pendientes.</p>
       </div>
     </div>
 
-    <div *ngIf="asesorias.length === 0" class="empty card">
-      No tienes solicitudes por el momento.
-    </div>
+    <div *ngIf="asesorias.length === 0" class="hint">No tienes solicitudes aún.</div>
 
     <div class="asesoria-list" *ngIf="asesorias.length > 0">
-      <div class="asesoria-item anim-item" *ngFor="let a of asesorias">
-        <div class="row">
-          <div class="who">
-            <div class="avatar" aria-hidden="true">
-              <span>{{ (a.name || 'A').slice(0,1) }}</span>
-            </div>
-            <div>
-              <b>{{ a.name }}</b>
-              <div class="muted small">{{ a.date }} • {{ a.hour }}</div>
-            </div>
+      <article class="asesoria" *ngFor="let a of asesorias">
+        <div class="a-head">
+          <div class="a-left">
+            <div class="a-name">{{ a.name }}</div>
+            <div class="a-meta">{{ a.date }} — {{ a.hour }}</div>
           </div>
 
-          <span class="pill pill--neutral">{{ a.status }}</span>
+          <span class="pill pill--status" [class.p-ok]="a.status==='approved'" [class.p-bad]="a.status==='rejected'">
+            {{ a.status }}
+          </span>
         </div>
 
-        <p class="muted">{{ a.comment }}</p>
+        <div class="a-body">
+          <div class="a-row">
+            <b>Motivo:</b>
+            <span>{{ a.comment || '—' }}</span>
+          </div>
 
-        <div class="actions">
-          <button
-            *ngIf="a.status === 'pending'"
-            (click)="approve(a)"
-            class="approve-btn"
-          >
-            Aprobar
-          </button>
-
-          <button
-            *ngIf="a.status === 'pending'"
-            (click)="reject(a)"
-            class="reject-btn"
-          >
-            Rechazar
-          </button>
+          <div class="a-row" *ngIf="a.response">
+            <b>Respuesta:</b>
+            <span>{{ a.response }}</span>
+          </div>
         </div>
-      </div>
+
+        <div class="a-actions" *ngIf="a.status === 'pending'">
+          <button (click)="approve(a)" class="approve">Aprobar</button>
+          <button (click)="reject(a)" class="reject">Rechazar</button>
+        </div>
+      </article>
     </div>
   </section>
 </page-container>

@@ -1,20 +1,25 @@
+// FILE: src/app/pages/admin/admin.ts
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { animate, style, transition, trigger } from '@angular/animations';
+
+import { HeaderComponent } from '../../ui/header/header';
+import { PageContainerComponent } from '../../ui/container/container';
 
 import { UserService } from '../../core/user/user.service';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 
-import {
-  AvailabilityService,
-  AvailabilitySlot,
-} from '../../core/availability/availability.service';
 import { ProgrammerProfile } from '../../core/models/programmer.model';
-
 import { AppUser } from '../../core/models/user.model';
-import { HeaderComponent } from '../../ui/header/header';
-import { PageContainerComponent } from '../../ui/container/container';
+
+import { AvailabilityService, AvailabilitySlot } from '../../core/availability/availability.service';
+
+const EMPTY_CONTACTS = {
+  email: '',
+  linkedin: '',
+  github: '',
+  whatsapp: '',
+};
 
 @Component({
   selector: 'app-admin-panel',
@@ -22,26 +27,6 @@ import { PageContainerComponent } from '../../ui/container/container';
   imports: [CommonModule, FormsModule, HeaderComponent, PageContainerComponent],
   templateUrl: './admin.html',
   styleUrls: ['./admin.scss'],
-  animations: [
-    trigger('fadeUp', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(12px)' }),
-        animate(
-          '520ms cubic-bezier(.2,.8,.2,1)',
-          style({ opacity: 1, transform: 'translateY(0)' })
-        ),
-      ]),
-    ]),
-    trigger('panelIn', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(16px) scale(.99)' }),
-        animate(
-          '560ms cubic-bezier(.2,.8,.2,1)',
-          style({ opacity: 1, transform: 'translateY(0) scale(1)' })
-        ),
-      ]),
-    ]),
-  ],
 })
 export class AdminPanelComponent implements OnInit {
   private userService = inject(UserService);
@@ -49,32 +34,53 @@ export class AdminPanelComponent implements OnInit {
   private availabilityService = inject(AvailabilityService);
   private cdr = inject(ChangeDetectorRef);
 
-  allUsers: AppUser[] = [];
   loading = false;
+  loadingSlots = false;
+
+  allUsers: AppUser[] = [];
+  programmers: ProgrammerProfile[] = [];
+
   selectedUser: AppUser | null = null;
 
-  newProgrammer = {
+  // ✅ tu HTML lo usa
+  editingExisting = false;
+
+  // ✅ mantenemos esto simple, pero el template NO debe usar contactLinks directo
+  newProgrammer: ProgrammerProfile = {
     uid: '',
     name: '',
     specialty: '',
     description: '',
     photoURL: '',
-    contactLinks: { email: '', linkedin: '', github: '', whatsapp: '' },
+    contactLinks: { ...EMPTY_CONTACTS },
     socialLinks: {},
-  };
+  } as any;
+
+  // ✅ getter seguro para el template (evita TS2532)
+  get contactLinksSafe() {
+    // si por alguna razón viene undefined, lo creamos
+    if (!(this.newProgrammer as any).contactLinks) {
+      (this.newProgrammer as any).contactLinks = { ...EMPTY_CONTACTS };
+    }
+    return (this.newProgrammer as any).contactLinks as typeof EMPTY_CONTACTS;
+  }
 
   // Disponibilidad
-  programmers: ProgrammerProfile[] = [];
   selectedProgrammerId = '';
   slotDate = '';
   slotHour = '';
   slots: AvailabilitySlot[] = [];
-  loadingSlots = false;
 
-  ngOnInit() {
-    console.log('🟩 ADMIN PANEL INICIADO');
-    this.loadUsers();
-    this.loadProgrammers();
+  // Cache para saber si ya existe perfil de programador
+  private programmerIds = new Set<string>();
+
+  async ngOnInit(): Promise<void> {
+    await Promise.all([this.loadUsers(), this.loadProgrammers()]);
+  }
+
+  // ✅ PUBLIC para el template
+  hasProgrammerProfile(uid: string): boolean {
+    return this.programmerIds.has(uid);
   }
 
   async loadUsers() {
@@ -84,9 +90,9 @@ export class AdminPanelComponent implements OnInit {
     try {
       const users = await this.userService.getAllUsers();
       this.allUsers = [...users];
-      console.log('Usuarios cargados:', this.allUsers);
     } catch (e) {
       console.error('ERROR obteniendo usuarios:', e);
+      this.allUsers = [];
     } finally {
       this.loading = false;
       this.cdr.detectChanges();
@@ -95,45 +101,114 @@ export class AdminPanelComponent implements OnInit {
 
   async loadProgrammers() {
     try {
-      this.programmers = await this.programmerService.getAllProgrammers();
+      const list = await this.programmerService.getAllProgrammers();
+      this.programmers = [...list];
+      this.programmerIds = new Set(list.map(p => p.uid));
       this.cdr.detectChanges();
     } catch (e) {
       console.error('Error cargando programadores:', e);
+      this.programmers = [];
+      this.programmerIds = new Set();
+      this.cdr.detectChanges();
     }
   }
 
-  startProgrammerSetup(user: AppUser) {
+  // ✅ lo llama tu HTML
+  async startProgrammerSetup(user: AppUser) {
     this.selectedUser = user;
+
+    const exists = this.hasProgrammerProfile(user.uid);
+    this.editingExisting = exists;
+
+    let existing: ProgrammerProfile | null = null;
+    if (exists) {
+      try {
+        existing = await this.programmerService.getProgrammer(user.uid);
+      } catch (e) {
+        console.error('Error leyendo perfil existente:', e);
+      }
+    }
 
     this.newProgrammer = {
       uid: user.uid,
-      name: user.displayName || '',
-      specialty: '',
-      description: '',
-      photoURL: user.photoURL || '',
+      name: existing?.name ?? user.displayName ?? '',
+      specialty: existing?.specialty ?? '',
+      description: existing?.description ?? '',
+      photoURL: existing?.photoURL ?? (user as any).photoURL ?? '',
       contactLinks: {
-        email: user.email || '',
-        linkedin: '',
-        github: '',
-        whatsapp: '',
+        ...EMPTY_CONTACTS,
+        ...(existing?.contactLinks ?? {}),
+        email: existing?.contactLinks?.email ?? user.email ?? '',
       },
-      socialLinks: {},
-    };
+      socialLinks: { ...(existing?.socialLinks ?? {}) },
+    } as any;
+
+    this.cdr.detectChanges();
   }
 
+  // ✅ lo llama tu HTML
   async saveProgrammerProfile() {
     if (!this.selectedUser) return;
 
-    await this.userService.updateRole(this.selectedUser.uid, 'programmer');
-    await this.programmerService.saveProgrammer(this.newProgrammer);
+    // 1) convierte a programador
+    try {
+      await this.userService.updateRole(this.selectedUser.uid, 'programmer');
+    } catch (e) {
+      console.error('Error actualizando rol a programmer:', e);
+    }
 
-    alert('✔ Programador guardado correctamente');
+    // 2) asegura contactLinks
+    const payload: ProgrammerProfile = {
+      ...(this.newProgrammer as any),
+      uid: this.selectedUser.uid,
+      contactLinks: { ...EMPTY_CONTACTS, ...(this.newProgrammer as any).contactLinks },
+      socialLinks: (this.newProgrammer as any).socialLinks ?? {},
+    };
 
-    this.selectedUser = null;
+    await this.programmerService.saveProgrammer(payload);
+
     await this.loadUsers();
     await this.loadProgrammers();
+
+    alert(this.editingExisting ? '✔ Cambios guardados' : '✔ Perfil creado');
+    this.cancelEdit();
   }
 
+  // ✅ lo llama tu HTML
+  cancelEdit() {
+    this.selectedUser = null;
+    this.editingExisting = false;
+    this.newProgrammer = {
+      uid: '',
+      name: '',
+      specialty: '',
+      description: '',
+      photoURL: '',
+      contactLinks: { ...EMPTY_CONTACTS },
+      socialLinks: {},
+    } as any;
+
+    this.cdr.detectChanges();
+  }
+
+  // ✅ lo llama tu HTML
+  async deleteProgrammerProfile(user: AppUser) {
+    const ok = confirm(`¿Eliminar perfil de programador de "${user.displayName || user.email}"?`);
+    if (!ok) return;
+
+    try {
+      await this.programmerService.deleteProgrammer(user.uid);
+      await this.loadProgrammers();
+      alert('🗑️ Perfil eliminado');
+    } catch (e) {
+      console.error('Error eliminando perfil:', e);
+      alert('❌ No se pudo eliminar el perfil');
+    }
+  }
+
+  // -----------------------------
+  // DISPONIBILIDAD
+  // -----------------------------
   async loadSlots() {
     if (!this.selectedProgrammerId) return;
 
@@ -142,13 +217,8 @@ export class AdminPanelComponent implements OnInit {
 
     try {
       const date = this.slotDate ? this.slotDate : undefined;
-      const all = await this.availabilityService.getSlots(
-        this.selectedProgrammerId,
-        date
-      );
-      this.slots = all.sort((a, b) =>
-        (a.date + a.hour).localeCompare(b.date + b.hour)
-      );
+      const data = await this.availabilityService.getSlots(this.selectedProgrammerId, date);
+      this.slots = [...data].sort((a, b) => (a.date + a.hour).localeCompare(b.date + b.hour));
     } catch (e) {
       console.error('Error cargando slots:', e);
       this.slots = [];
@@ -163,12 +233,7 @@ export class AdminPanelComponent implements OnInit {
       alert('Selecciona programador, fecha y hora');
       return;
     }
-
-    await this.availabilityService.addSlot(
-      this.selectedProgrammerId,
-      this.slotDate,
-      this.slotHour
-    );
+    await this.availabilityService.addSlot(this.selectedProgrammerId, this.slotDate, this.slotHour);
     this.slotHour = '';
     await this.loadSlots();
   }

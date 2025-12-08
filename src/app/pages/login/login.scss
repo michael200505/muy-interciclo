@@ -1,260 +1,121 @@
 :host {
   display: block;
+  min-height: 100vh;
+  color: #eaf0ff;
+  background: radial-gradient(1100px 620px at 18% 0%, rgba(124, 58, 237, 0.28), transparent 55%),
+              radial-gradient(1100px 620px at 92% 10%, rgba(45, 212, 191, 0.18), transparent 55%),
+              linear-gradient(180deg, #0b1220 0%, #0a1020 100%);
 }
 
-.login-wrapper{
-  min-height: 100dvh;
+.login-wrapper {
+  min-height: calc(100vh - 40px);
   display: grid;
   place-items: center;
-  padding: clamp(16px, 4vw, 40px);
+  padding: clamp(16px, 4vw, 44px);
 }
 
-.login-card{
-  width: min(560px, 100%);
-  padding: clamp(20px, 4vw, 36px);
-  border-radius: 22px;
-
-  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
-  border: 1px solid rgba(255,255,255,.12);
-
-  box-shadow:
-    0 22px 70px rgba(0,0,0,.55),
-    0 0 24px color-mix(in srgb, var(--accent) 18%, transparent),
-    0 0 24px color-mix(in srgb, var(--accent-2) 14%, transparent);
-
+.login-card {
+  width: min(720px, 100%);
+  padding: clamp(22px, 3.6vw, 34px);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 
   display: grid;
   gap: 12px;
-  position: relative;
-  overflow: hidden;
 }
 
-/* Animated neon wash */
-.login-card::before{
-  content:"";
-  position: absolute;
-  inset: -40%;
-  background:
-    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 55%),
-    radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 55%),
-    radial-gradient(circle at 60% 80%, color-mix(in srgb, var(--accent-3) 18%, transparent), transparent 55%);
-  filter: blur(18px);
-  opacity: .7;
-  animation: drift 10s var(--ease-out) infinite alternate;
-  pointer-events: none;
-}
-
-@keyframes drift{
-  from{ transform: translate3d(-2%, -1%, 0) rotate(-2deg); }
-  to{ transform: translate3d(2%, 1%, 0) rotate(2deg); }
-}
-
-.brand{
-  display:flex;
-  align-items:center;
+.brand {
+  display: inline-flex;
+  align-items: center;
   gap: 10px;
-  position: relative;
-  z-index: 1;
+  font-weight: 900;
+  letter-spacing: 0.2px;
 
-  .brand__dot{
-    width: 12px;
-    height: 12px;
+  .dot {
+    width: 10px;
+    height: 10px;
     border-radius: 999px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: 0 0 22px color-mix(in srgb, var(--accent-2) 35%, transparent);
+    background: linear-gradient(90deg, #a78bfa, #22d3ee);
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
   }
-
-  .brand__name{
-    font-weight: 950;
-    letter-spacing: .25px;
-    color: rgba(255,255,255,.92);
-  }
+  .brand-name { opacity: 0.95; }
 }
 
-h1{
+h1 {
   margin: 0;
-  position: relative;
-  z-index: 1;
-
-  font-size: clamp(22px, 2.4vw, 32px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: clamp(22px, 2.4vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.12;
 }
 
-.subtitle{
-  margin: 0 0 6px 0;
-  position: relative;
-  z-index: 1;
-
-  color: rgba(255,255,255,.70);
-  font-size: 0.98rem;
-  line-height: 1.5;
+.subtitle {
+  margin: 0 0 6px;
+  color: rgba(234, 240, 255, 0.8);
+  line-height: 1.55;
 }
 
-.google-btn{
-  position: relative;
-  z-index: 1;
-
+/* Botón Google (no se monta NUNCA) */
+.google-btn {
   width: 100%;
   min-height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
 
-  display: grid;
-  grid-template-columns: 44px 1fr;
+  display: inline-flex;
   align-items: center;
-
+  justify-content: center;
   gap: 12px;
-  padding: 12px 16px;
 
-  border-radius: 16px;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.92), rgba(34, 211, 238, 0.92));
+  color: #0b1220;
   font-weight: 950;
-  font-size: 1rem;
+  letter-spacing: 0.01em;
 
-  border: 1px solid rgba(255,255,255,.14);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #070A12;
-
-  box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 0 22px color-mix(in srgb, var(--accent) 24%, transparent);
-
-  transition:
-    transform 140ms var(--ease-pop),
-    box-shadow 220ms var(--ease-out),
-    filter 220ms var(--ease-out);
-
-  .google-btn__icon{
-    width: 38px;
-    height: 38px;
-    border-radius: 14px;
-    display:grid;
-    place-items:center;
-
-    background: rgba(255,255,255,.92);
-    box-shadow: 0 10px 18px rgba(0,0,0,.25);
-  }
-
-  .google-btn__text{
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .google-btn__glow{
-    position:absolute;
-    inset: -20px;
-    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,.28), transparent 55%);
-    opacity: 0;
-    transition: opacity 220ms var(--ease-out);
-    pointer-events: none;
-  }
-
-  &:hover{
-    transform: translateY(-1px);
-    filter: brightness(1.05);
-    box-shadow: 0 22px 54px rgba(0,0,0,.55), 0 0 28px color-mix(in srgb, var(--accent-2) 26%, transparent);
-    .google-btn__glow{ opacity: .55; }
-  }
-
-  &:active{
-    transform: translateY(0) scale(.99);
-    filter: brightness(.99);
-  }
-
-  &:disabled{
-    cursor: not-allowed;
-    opacity: 0.65;
-    filter: grayscale(.15);
-    transform: none;
-    box-shadow: none;
-  }
-
-
-
-  &:hover{
-    transform: translateY(-1px);
-    filter: brightness(1.05);
-    box-shadow:
-      0 22px 54px rgba(0,0,0,.55),
-      0 0 28px color-mix(in srgb, var(--accent-2) 26%, transparent);
-    .google-btn__glow{ opacity: .55; }
-  }
-
-  &:active{
-    transform: translateY(0) scale(.99);
-    filter: brightness(.99);
-  }
-
-  &:focus-visible{
-    outline: none;
-    box-shadow:
-      0 0 0 4px color-mix(in srgb, var(--accent-2) 22%, transparent),
-      0 0 0 1px rgba(255,255,255,.12) inset,
-      0 22px 54px rgba(0,0,0,.50);
-  }
-
-  &:disabled{
-    cursor: not-allowed;
-    opacity: 0.65;
-    filter: grayscale(.15);
-    transform: none;
-    box-shadow: none;
-  }
+  box-shadow: 0 18px 40px rgba(45, 96, 255, 0.18);
+  transition: transform 140ms ease, filter 140ms ease, box-shadow 180ms ease;
 }
 
-.error{
-  margin: 6px 0 0 0;
-  position: relative;
-  z-index: 1;
-
-  color: rgba(255, 173, 190, .95);
-  font-weight: 850;
-  font-size: .95rem;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(244, 63, 94, .25);
-  background: rgba(244, 63, 94, .10);
+.google-btn:hover {
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 22px 52px rgba(45, 96, 255, 0.22);
 }
 
-.hint{
-  position: relative;
-  z-index: 1;
-
-  margin-top: 6px;
-  display:flex;
-  gap: 10px;
-  align-items: center;
-
-  padding: 10px 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.04);
-
-  .hint__chip{
-    font-size: 12px;
-    font-weight: 950;
-    padding: 5px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.14);
-    background: color-mix(in srgb, var(--accent-2) 10%, rgba(255,255,255,.03));
-    box-shadow: 0 0 18px color-mix(in srgb, var(--accent-2) 18%, transparent);
-  }
-
-  .hint__text{
-    color: rgba(255,255,255,.68);
-    font-weight: 800;
-    font-size: .9rem;
-    line-height: 1.35;
-  }
+.google-btn:active {
+  transform: translateY(0) scale(0.99);
 }
 
-@media (max-width: 420px){
-  .login-card{ border-radius: 18px; gap: 10px; }
-  .google-btn{ border-radius: 14px; }
+.google-btn:focus-visible {
+  outline: 3px solid rgba(34, 211, 238, 0.45);
+  outline-offset: 3px;
 }
 
-/* Accesibilidad: reduce motion */
-@media (prefers-reduced-motion: reduce){
-  .login-card::before{ animation: none; }
-  .google-btn{ transition: none; }
+/* “G” fijo a la izquierda (ancho fijo para que el texto no invada) */
+.gmark {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+
+  background: rgba(255, 255, 255, 0.92);
+  color: #111827;
+  font-weight: 1000;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+  flex: 0 0 34px;
+}
+
+.btn-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .google-btn { transition: none; }
 }

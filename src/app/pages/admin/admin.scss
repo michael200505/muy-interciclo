@@ -1,51 +1,12 @@
-:host{
-  display:block;
-  min-height: 100dvh;
+:host {
+  display: block;
+  min-height: 100vh;
   color: var(--text);
-}
 
-.admin-shell{
-  display:grid;
-  gap: 18px;
-}
-
-.title{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-
-  .title__spark{
-    width: 14px;
-    height: 14px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: var(--glow), var(--glow-2);
-  }
-}
-
-.card-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.card-sub{
-  margin: 6px 0 0 0;
-  color: var(--muted);
-  font-weight: 800;
-}
-
-.head-actions{
-  display:flex;
-  gap: 10px;
-  align-items:center;
-}
-
-.muted{
-  color: var(--muted);
-  font-weight: 750;
+  background:
+    radial-gradient(950px 540px at 12% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 58%),
+    radial-gradient(950px 540px at 92% 12%, color-mix(in srgb, var(--accent-2) 9%, transparent), transparent 58%),
+    var(--bg);
 }
 
 /* Grids del formulario */
@@ -54,6 +15,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
 .grid3{
   display:grid;
   grid-template-columns: 1.3fr 1fr .7fr;
@@ -65,166 +27,214 @@
   .grid3{ grid-template-columns: 1fr; }
 }
 
-/* user cell */
-.usercell{
+/* Head */
+.section-head{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
+  justify-content:space-between;
   gap: 12px;
-
-  .usercell__meta{
-    display:flex;
-    flex-direction: column;
-    gap: 2px;
-
-    b{ letter-spacing: -0.01em; }
-    .muted{ font-size: 12px; }
-  }
 }
 
-.avatar{
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
-  display:grid;
-  place-items:center;
-
-  border: 1px solid rgba(255,255,255,.14);
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-  box-shadow: 0 0 18px color-mix(in srgb, var(--accent-2) 16%, transparent);
-
-  span{
-    font-weight: 950;
-    color: rgba(255,255,255,.92);
-  }
+.muted{
+  margin: 8px 0 0;
+  color: color-mix(in srgb, var(--text) 70%, transparent);
 }
 
-.cell-actions{
-  display:flex;
-  justify-content:flex-end;
-}
-
-/* pills per role */
-.pill--admin{
-  background: color-mix(in srgb, #F43F5E 14%, rgba(255,255,255,.03));
-  border-color: rgba(244,63,94,.25);
-}
-.pill--programmer{
-  background: color-mix(in srgb, #22D3EE 14%, rgba(255,255,255,.03));
-  border-color: rgba(34,211,238,.25);
-}
-.pill--user{
-  background: color-mix(in srgb, #7C3AED 14%, rgba(255,255,255,.03));
-  border-color: rgba(124,58,237,.25);
-}
-.pill--ok{
-  background: color-mix(in srgb, var(--accent-2) 14%, rgba(255,255,255,.03));
-  border-color: rgba(34,211,238,.25);
-}
-
-/* Form panel header */
-.form-panel{
-  position: relative;
-}
 .form-head{
   display:flex;
   align-items:flex-start;
-  justify-content: space-between;
+  justify-content:space-between;
   gap: 12px;
-  margin-bottom: 10px;
 }
 
-/* Slots card */
-.slot-card{
-  border-color: color-mix(in srgb, var(--accent-2) 22%, var(--stroke));
-}
-
-/* Empty state */
-.empty{
-  color: var(--muted);
-}
-
-/* Skeleton */
-.skeleton{
-  display:grid;
-  gap: 10px;
-  margin-top: 12px;
-  padding: 10px 0;
-}
-
-.sk-row{
-  display:grid;
-  grid-template-columns: 1.2fr 1.6fr .6fr .8fr;
-  gap: 10px;
-}
-
-.sk{
-  height: 40px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,.04),
-    rgba(255,255,255,.09),
-    rgba(255,255,255,.04)
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.2s var(--ease-out) infinite;
-}
-
-.sk-a{ height: 44px; }
-.sk-b{ height: 44px; }
-.sk-c{ height: 44px; }
-.sk-d{ height: 44px; }
-
-@keyframes shimmer{
-  from{ background-position: 0% 0%; }
-  to{ background-position: 200% 0%; }
-}
-/* =========================
-   Fix table overflow + action
-   ========================= */
+/* -----------------------------------
+   TABLE / LIST
+----------------------------------- */
 .table{
-  table-layout: fixed;
-}
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 12px;
 
-.table th:nth-child(1){ width: 34%; }
-.table th:nth-child(2){ width: 28%; }
-.table th:nth-child(3){ width: 16%; }
-.table th:nth-child(4){ width: 22%; }
-
-.usercell__meta .muted{
-  max-width: 320px;
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px);
 }
 
+.table thead th{
+  text-align: left;
+  font-weight: 950;
+  padding: 14px 14px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: color-mix(in srgb, var(--text) 88%, transparent);
+}
+
+.table tbody td{
+  padding: 14px 14px;
+  border-top: 1px solid var(--stroke);
+  vertical-align: middle;
+  min-width: 0;
+}
+
+/* actions */
 .cell-actions{
   display:flex;
+  gap: 10px;
   justify-content:flex-end;
+  flex-wrap: wrap; /* ✅ evita solapes si el botón es largo */
 }
 
-.cell-actions button{
-  width: 100%;
-  max-width: 220px;
+/* user cell */
+.user{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  min-width: 0;
+}
+
+.avatar{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display:grid;
+  place-items:center;
+  font-weight: 1000;
+  color: #0b1220;
+  background: linear-gradient(180deg, var(--accent-2), #ffffff);
+  box-shadow: 0 10px 22px rgba(0,0,0,.14);
+  flex: 0 0 42px;
+}
+
+.u-meta{
+  min-width: 0;
+  display:grid;
+  gap: 3px;
+}
+
+.u-name{
+  font-weight: 950;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Pills: soporta roles en español también */
-.pill--administración,
-.pill--administracion{
-  background: color-mix(in srgb, #F43F5E 14%, rgba(255,255,255,.03));
-  border-color: rgba(244,63,94,.25);
+.mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12.5px;
+  color: color-mix(in srgb, var(--text) 76%, transparent);
 }
 
-.pill--programador{
-  background: color-mix(in srgb, #22D3EE 14%, rgba(255,255,255,.03));
-  border-color: rgba(34,211,238,.25);
+.wrap{
+  overflow-wrap:anywhere;
+  word-break: break-word;
 }
 
-.pill--usuario{
-  background: color-mix(in srgb, #7C3AED 14%, rgba(255,255,255,.03));
-  border-color: rgba(124,58,237,.25);
+/* role pills */
+.pill--admin{
+  border-color: rgba(255, 80, 110, .35);
+  background: rgba(255, 80, 110, .12);
+  color: rgba(255, 145, 170, 1);
+}
+.pill--prog{
+  border-color: rgba(56, 189, 248, .35);
+  background: rgba(56, 189, 248, .12);
+  color: rgba(110, 231, 255, 1);
+}
+.pill--user{
+  border-color: rgba(167, 139, 250, .35);
+  background: rgba(167, 139, 250, .12);
+  color: rgba(200, 180, 255, 1);
+}
+
+/* -----------------------------------
+   MODO VERTICAL (sin montajes)
+----------------------------------- */
+@media (max-width: 980px){
+  .table{
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .table thead{
+    display: none;
+  }
+
+  .table tbody{
+    display: grid;
+    gap: 12px;
+  }
+
+  .table tbody tr{
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid var(--stroke);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .table tbody td{
+    display: grid;
+    grid-template-columns: 140px 1fr; /* label | value */
+    gap: 10px;
+    padding: 0;
+    border-top: none;
+    align-items: start;
+  }
+
+  .table tbody td::before{
+    content: attr(data-label);
+    font-weight: 950;
+    color: color-mix(in srgb, var(--text) 74%, transparent);
+  }
+
+  .cell-actions{
+    justify-content: flex-start;
+  }
+
+  .table tbody td:first-child{
+    grid-template-columns: 1fr;
+  }
+  .table tbody td:first-child::before{
+    margin-bottom: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; }
+}
+/* --- Acciones en columna (para no verse montado) --- */
+.actions-col{
+  display: grid;
+  gap: 10px;
+  align-items: start;
+}
+
+.actions-col button{
+  width: 100%;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Si quieres que en desktop se vean 2 botones en fila cuando hay perfil */
+@media (min-width: 981px){
+  .actions-col{
+    grid-auto-flow: row;
+  }
+}
+.actions-2{
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 980px){
+  .actions-2{
+    justify-content: flex-start;
+  }
 }
