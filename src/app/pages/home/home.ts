@@ -1,9 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { UserService } from '../../core/user/user.service';
-import { AppUser } from '../../core/models/user.model';
+import { ProgrammerService } from '../../core/programmer/programmer.service';
+import { ProgrammerProfile } from '../../core/models/programmer.model';
 
 import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
@@ -11,24 +11,48 @@ import { PageContainerComponent } from '../../ui/container/container';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,           // ✔ para *ngFor
-    HeaderComponent,        // ✔ para <app-header>
-    PageContainerComponent  // ✔ para <page-container> o <app-page-container>
-  ],
+  imports: [CommonModule, HeaderComponent, PageContainerComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
 export class HomeComponent implements OnInit {
 
   private router = inject(Router);
-  private userService = inject(UserService);
+  private programmerService = inject(ProgrammerService);
 
-  programmers: AppUser[] = [];
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
 
-  async ngOnInit() {
-    // cargamos todos los programadores
-    this.programmers = await this.userService.getProgrammers();
+  programmers: ProgrammerProfile[] = [];
+  loading = true;
+
+  async ngOnInit(): Promise<void> {
+    console.log('✅ HOME INIT');
+
+    this.loading = true;
+    this.cdr.detectChanges();
+
+    try {
+      const list = await this.programmerService.getAllProgrammers();
+      console.log('✅ PROGRAMMERS:', list);
+
+      // ✅ fuerza a Angular a enterarse del cambio al recargar la página
+      this.zone.run(() => {
+        this.programmers = [...list];
+        this.loading = false;
+      });
+
+      this.cdr.detectChanges();
+    } catch (e) {
+      console.error('❌ ERROR cargando programmers:', e);
+
+      this.zone.run(() => {
+        this.programmers = [];
+        this.loading = false;
+      });
+
+      this.cdr.detectChanges();
+    }
   }
 
   openPortfolio(uid: string) {

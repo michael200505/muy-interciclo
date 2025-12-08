@@ -1,9 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
-import { Auth } from '@angular/fire/auth';
+import { NotificationService } from '../../core/notification/notification.service';
+
 import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
 
@@ -14,27 +17,40 @@ import { PageContainerComponent } from '../../ui/container/container';
   templateUrl: './agendar.html',
   styleUrls: ['./agendar.scss']
 })
-export class AgendarAsesoriaComponent {
-
+export class AgendarAsesoriaComponent implements OnInit {
   private asesoriaService = inject(AsesoriaService);
+  private notifService = inject(NotificationService);
+
   private route = inject(ActivatedRoute);
   private auth = inject(Auth);
   private router = inject(Router);
 
-  programmerId: string = '';
+  programmerId = '';
 
   form = {
     name: '',
     email: '',
     date: '',
-    hour: '',      
+    hour: '',
     comment: ''
   };
 
-  ngOnInit(): void {
-    this.programmerId = this.route.snapshot.params['id'];
+  private async waitUser() {
+    return await new Promise<any>((resolve) => {
+      onAuthStateChanged(this.auth, (u) => resolve(u));
+    });
+  }
 
-    const current = this.auth.currentUser;
+  async ngOnInit(): Promise<void> {
+    this.programmerId = this.route.snapshot.paramMap.get('uid') || '';
+
+    if (!this.programmerId) {
+      alert('Programador inválido');
+      this.router.navigate(['/home']);
+      return;
+    }
+
+    const current = await this.waitUser();
     if (current) {
       this.form.name = current.displayName || '';
       this.form.email = current.email || '';
@@ -42,17 +58,39 @@ export class AgendarAsesoriaComponent {
   }
 
   async enviarSolicitud(): Promise<void> {
-    const user = this.auth.currentUser;
-    if (!user || !this.programmerId) return;
+    const user = await this.waitUser();
+    if (!user || !this.programmerId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (!this.form.date || !this.form.hour) {
+      alert('Selecciona fecha y hora');
+      return;
+    }
 
     await this.asesoriaService.requestAsesoria({
       programmerId: this.programmerId,
       userId: user.uid,
-      name: this.form.name,      
-      email: this.form.email,    
+      name: this.form.name,
+      email: this.form.email,
       date: this.form.date,
       hour: this.form.hour,
       comment: this.form.comment
+    });
+
+    // ✅ Notificación al programador (simulada)
+    await this.notifService.send({
+      toUid: this.programmerId,
+      roleTarget: 'programmer',
+      title: 'Nueva solicitud de asesoría 📩',
+      message: `${this.form.name} solicitó asesoría para ${this.form.date} a las ${this.form.hour}.`,
+      read: false,
+      createdAt: Date.now(),
+      programmerId: this.programmerId,
+      userId: user.uid,
+      date: this.form.date,
+      hour: this.form.hour
     });
 
     alert('Solicitud enviada correctamente');

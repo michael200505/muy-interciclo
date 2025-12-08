@@ -11,6 +11,7 @@ import {
   deleteDoc
 } from '@angular/fire/firestore';
 import { Project } from '../models/project.model';
+import { getDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -34,15 +35,19 @@ export class ProjectService {
     return this.createProject(project);
   }
 
-  async getProjectsByUser(uid: string): Promise<Project[]> {
-    const q = query(this.col(), where('uid', '==', uid));
-    const snap = await getDocs(q);
+ async getProjectsByUser(uid: string): Promise<Project[]> {
+  const q = query(this.col(), where('uid', '==', uid));
+  const snap = await getDocs(q);
 
-    return snap.docs.map(d => ({
-      id: d.id,
-      ...d.data() as Project
-    }));
-  }
+  return snap.docs.map(d => {
+    const data = d.data() as Project;
+    return {
+      ...data,
+      id: d.id,         // ✅ al final
+    };
+  });
+}
+
 
   async updateProject(id: string, data: Partial<Project>): Promise<void> {
     const ref = doc(this.firestore, 'projects', id);
@@ -53,4 +58,14 @@ export class ProjectService {
     const ref = doc(this.firestore, 'projects', id);
     await deleteDoc(ref);
   }
+ async getProjectById(id: string): Promise<Project | null> {
+  const ref = doc(this.firestore, 'projects', id);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return null;
+
+  const data = snap.data() as Project;
+  return { ...data, id: snap.id }; // ✅ id al final
+}
+
 }

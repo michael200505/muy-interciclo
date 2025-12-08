@@ -1,7 +1,8 @@
 <app-header></app-header>
 
 <page-container>
-  <h2>Nuevo Proyecto</h2>
+  <h2>{{ editingId ? 'Editar Proyecto' : 'Nuevo Proyecto' }}</h2>
+
 
   <form (ngSubmit)="save()" class="form">
 
@@ -34,7 +35,10 @@
     <label>URL de la Demo</label>
     <input type="url" [(ngModel)]="project.demoURL" name="demoURL">
 
-    <button type="submit">Guardar Proyecto</button>
+    <button type="submit">
+  {{ editingId ? 'Actualizar Proyecto' : 'Guardar Proyecto' }}
+</button>
+
 
   </form>
 </page-container>

@@ -1,24 +1,24 @@
 <app-header></app-header>
 
 <page-container>
-    <h1>Agendar asesoría</h1>
+  <h1>Agendar asesoría</h1>
 
-   <form (ngSubmit)="enviarSolicitud()" class="form">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="form.name" name="name" required>
+  <form (ngSubmit)="enviarSolicitud()" class="form">
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="form.name" name="name" required>
 
-        <label>Email</label>
-        <input type="email" [(ngModel)]="form.email" name="email" required>
+    <label>Email</label>
+    <input type="email" [(ngModel)]="form.email" name="email" required>
 
-        <label>Fecha</label>
-        <input type="date" [(ngModel)]="form.date" name="date" required>
+    <label>Fecha</label>
+    <input type="date" [(ngModel)]="form.date" name="date" required>
 
-        <label>Hora</label>
-        <input type="time" [(ngModel)]="form.hour" name="time" required>
+    <label>Hora</label>
+    <input type="time" [(ngModel)]="form.hour" name="hour" required>
 
-        <label>Comentario (opcional)</label>
-        <textarea [(ngModel)]="form.comment" name="comment"></textarea>
+    <label>Comentario (opcional)</label>
+    <textarea [(ngModel)]="form.comment" name="comment"></textarea>
 
-        <button type="submit">Enviar solicitud</button>
-    </form>
+    <button type="submit">Enviar solicitud</button>
+  </form>
 </page-container>

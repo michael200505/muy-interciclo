@@ -1,9 +1,15 @@
 <header class="header">
-  <div class="logo">Portafolios</div>
+  <div class="logo" routerLink="/home">Portafolios</div>
 
   <nav class="nav">
-    <a routerLink="/" routerLinkActive="active" routerLinkActiveOptions="{ exact: true }">Inicio</a>
+    <a routerLink="/home" routerLinkActive="active">Inicio</a>
     <a routerLink="/mis-asesorias" routerLinkActive="active">Mis asesorías</a>
+
+    <button class="bell" (click)="goNotifications()" title="Notificaciones">
+      🔔
+      <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+
     <button class="logout-btn" (click)="logout()">Cerrar sesión</button>
   </nav>
 </header>

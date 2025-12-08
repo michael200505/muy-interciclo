@@ -1,30 +1,42 @@
 <app-header></app-header>
 
 <page-container>
-
   <h1>Panel del Programador</h1>
 
   <!-- PROYECTOS -->
-  <section class="card">
+ <section class="card">
+  <div class="title-row">
     <h2>Mis Proyectos</h2>
-
     <a class="btn-new" routerLink="/programmer/new-project">+ Nuevo Proyecto</a>
+  </div>
 
-    <div class="project-list">
-      <div class="project-item" *ngFor="let p of projects">
-        <h3>{{ p.title }}</h3>
-        <p>{{ p.description }}</p>
-        <p><b>Tipo:</b> {{ p.type }}</p>
-        <p><b>Rol:</b> {{ p.role }}</p>
-        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+  <div *ngIf="loadingProjects">Cargando proyectos...</div>
+  <div *ngIf="!loadingProjects && projects.length === 0">No tienes proyectos aún.</div>
 
-        <div class="actions">
-          <a routerLink="['/programmer/edit', p.uid]" class="edit">Editar</a>
-          <button class="delete">Eliminar</button>
-        </div>
+  <div class="project-list" *ngIf="!loadingProjects && projects.length > 0">
+    <div class="project-item" *ngFor="let p of projects">
+      <h3>{{ p.title }}</h3>
+      <p>{{ p.description }}</p>
+
+      <div class="meta">
+        <span><b>Tipo:</b> {{ p.type }}</span>
+        <span><b>Rol:</b> {{ p.role }}</span>
+      </div>
+
+      <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+
+      <div class="links" *ngIf="p.repoURL || p.demoURL">
+        <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
+        <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+      </div>
+
+      <div class="actions">
+        <a class="edit" [routerLink]="['/programmer/edit', p.id]">Editar</a>
+        <button class="delete" (click)="deleteProject(p)">Eliminar</button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- ASESORÍAS -->
   <section class="card">
@@ -38,11 +50,15 @@
         <p><b>Estado:</b> {{ a.status }}</p>
 
         <div class="actions">
-          <button *ngIf="a.status === 'pending'" (click)="approve(a)" class="approve">Aprobar</button>
-          <button *ngIf="a.status === 'pending'" (click)="reject(a)" class="reject">Rechazar</button>
+          <button *ngIf="a.status === 'pending'" (click)="approve(a)" class="approve">
+            Aprobar
+          </button>
+
+          <button *ngIf="a.status === 'pending'" (click)="reject(a)" class="reject">
+            Rechazar
+          </button>
         </div>
       </div>
     </div>
   </section>
-
 </page-container>

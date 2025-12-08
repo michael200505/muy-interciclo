@@ -1,39 +1,123 @@
 <app-header></app-header>
 
-<page-container *ngIf="programmer">
-  <div class="portfolio-header">
-    <img [src]="programmer.photoURL" alt="Foto de {{ programmer.name }}" class="avatar-lg">
+<page-container>
+  <!-- Estados -->
+  <div *ngIf="loading" class="hint">Cargando portafolio...</div>
 
-    <div>
-      <h1>{{ programmer.name }}</h1>
-      <p class="specialty">{{ programmer.specialty }}</p>
-      <p class="description">{{ programmer.description }}</p>
-
-      <button (click)="agendar(programmer.uid)">Agendar asesoría</button>
-    </div>
+  <div *ngIf="!loading && notFound" class="hint">
+    Portafolio no encontrado.
   </div>
 
-  <hr>
+  <ng-container *ngIf="!loading && programmer">
+    <!-- PERFIL -->
+    <div class="portfolio-header">
+      <img
+        [src]="programmer.photoURL || 'https://via.placeholder.com/96'"
+        alt="Foto de {{ programmer.name }}"
+        class="avatar-lg"
+      />
 
-  <h2>Proyectos</h2>
+      <div class="profile-info">
+        <h1>{{ programmer.name }}</h1>
+        <p class="specialty">{{ programmer.specialty }}</p>
+        <p class="description">{{ programmer.description }}</p>
 
-  <div class="project-list">
+        <div class="cta-row">
+          <button (click)="agendar(programmer.uid)">Agendar asesoría</button>
+        </div>
 
-    <div class="project-card" *ngFor="let p of projects">
+        <!-- CONTACTO / REDES -->
+        <div class="contact-grid">
+  <a *ngIf="programmer.contactLinks?.email"
+     [href]="'mailto:' + programmer.contactLinks?.email">
+    ✉️ {{ programmer.contactLinks?.email }}
+  </a>
 
-      <h3>{{ p.title }} ({{ p.type }})</h3>
+  <a *ngIf="programmer.contactLinks?.github"
+     [href]="programmer.contactLinks?.github"
+     target="_blank" rel="noopener">
+    💻 GitHub
+  </a>
 
-      <p>{{ p.description }}</p>
+  <a *ngIf="programmer.contactLinks?.linkedin"
+     [href]="programmer.contactLinks?.linkedin"
+     target="_blank" rel="noopener">
+    🔗 LinkedIn
+  </a>
 
-      <p><b>Rol:</b> {{ p.role }}</p>
-      <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+  <a *ngIf="programmer.contactLinks?.whatsapp"
+     [href]="whatsappLink(programmer.contactLinks?.whatsapp)"
+     target="_blank" rel="noopener">
+    💬 WhatsApp
+  </a>
 
-      <div class="links">
-        <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank">Repositorio</a>
-        <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank">Demo</a>
+  <a *ngIf="programmer.socialLinks?.twitter"
+     [href]="programmer.socialLinks?.twitter"
+     target="_blank" rel="noopener">
+    🐦 Twitter/X
+  </a>
+
+  <a *ngIf="programmer.socialLinks?.instagram"
+     [href]="programmer.socialLinks?.instagram"
+     target="_blank" rel="noopener">
+    📸 Instagram
+  </a>
+
+  <a *ngIf="programmer.socialLinks?.facebook"
+     [href]="programmer.socialLinks?.facebook"
+     target="_blank" rel="noopener">
+    📘 Facebook
+  </a>
+</div>
+
       </div>
-
     </div>
 
-  </div>
+    <hr>
+
+    <!-- PROYECTOS ACADÉMICOS -->
+    <h2>Proyectos Académicos</h2>
+    <div *ngIf="academicProjects.length === 0" class="hint">
+      No hay proyectos académicos todavía.
+    </div>
+
+    <div class="project-list" *ngIf="academicProjects.length > 0">
+      <div class="project-card" *ngFor="let p of academicProjects">
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.description }}</p>
+
+        <p><b>Rol:</b> {{ p.role }}</p>
+        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+
+        <div class="links">
+          <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
+          <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- PROYECTOS PROFESIONALES -->
+    <h2>Proyectos Profesionales</h2>
+    <div *ngIf="professionalProjects.length === 0" class="hint">
+      No hay proyectos profesionales todavía.
+    </div>
+
+    <div class="project-list" *ngIf="professionalProjects.length > 0">
+      <div class="project-card" *ngFor="let p of professionalProjects">
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.description }}</p>
+
+        <p><b>Rol:</b> {{ p.role }}</p>
+        <p><b>Tecnologías:</b> {{ p.technologies.join(', ') }}</p>
+
+        <div class="links">
+          <a *ngIf="p.repoURL" [href]="p.repoURL" target="_blank" rel="noopener">Repositorio</a>
+          <a *ngIf="p.demoURL" [href]="p.demoURL" target="_blank" rel="noopener">Demo</a>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
 </page-container>

@@ -1,17 +1,29 @@
 <app-header></app-header>
 
 <page-container>
-  <h1>Programadores Disponibles</h1>
+  <h1 class="page-title">Programadores Disponibles</h1>
 
-  <div class="grid">
-    <div
-      class="card"
-      *ngFor="let p of programmers"
-      (click)="openPortfolio(p.uid)"
-    >
-      <img [src]="p.photoURL" alt="Foto" />
-      <h3>{{ p.displayName }}</h3>
-      <p>{{ p.specialty }}</p>
+  <p class="page-subtitle">
+    Explora portafolios y agenda una asesoría con el programador que mejor se ajusta a tu necesidad.
+  </p>
+
+  <div *ngIf="loading" class="page-subtitle">Cargando programadores...</div>
+
+  <div *ngIf="!loading && programmers.length === 0" class="page-subtitle">
+    No hay programadores registrados todavía.
+  </div>
+
+  <div class="card-grid" *ngIf="!loading && programmers.length > 0">
+    <div class="card" *ngFor="let p of programmers" (click)="openPortfolio(p.uid)">
+      <img class="avatar"
+           [src]="p.photoURL || 'https://via.placeholder.com/64'"
+           alt="Foto de {{ p.name }}" />
+
+      <div class="card-body">
+        <h2>{{ p.name }}</h2>
+        <p class="specialty">{{ p.specialty || 'Especialidad no especificada' }}</p>
+        <p class="description">{{ p.description || 'Sin descripción.' }}</p>
+      </div>
     </div>
   </div>
 </page-container>

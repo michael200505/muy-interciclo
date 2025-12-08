@@ -24,7 +24,6 @@
         <td>{{ user.role }}</td>
 
         <td>
-          <!-- Botón para crear perfil de programador -->
           <button (click)="startProgrammerSetup(user)">Crear Perfil Programador</button>
         </td>
       </tr>
@@ -66,4 +65,46 @@
       <button (click)="selectedUser = null">Cancelar</button>
     </div>
   </div>
+
+  <!-- DISPONIBILIDAD -->
+  <section class="form-box" style="margin-top:24px;">
+    <h2>Disponibilidad de Programadores</h2>
+
+    <label>Programador</label>
+    <select [(ngModel)]="selectedProgrammerId" (change)="loadSlots()">
+      <option value="">-- Selecciona --</option>
+      <option *ngFor="let p of programmers" [value]="p.uid">
+        {{ p.name }}
+      </option>
+    </select>
+
+    <label>Filtrar por fecha (opcional)</label>
+    <input type="date" [(ngModel)]="slotDate" (change)="loadSlots()"/>
+
+    <div class="btn-group" style="align-items:end;">
+      <div style="flex:1;">
+        <label>Hora</label>
+        <input type="time" [(ngModel)]="slotHour"/>
+      </div>
+
+      <button class="primary-btn" (click)="addSlot()">Agregar hora</button>
+    </div>
+
+    <div style="margin-top:12px;">
+      <div *ngIf="loadingSlots">Cargando horarios...</div>
+
+      <div *ngIf="!loadingSlots && selectedProgrammerId && slots.length === 0">
+        No hay horarios registrados.
+      </div>
+
+      <div *ngIf="!loadingSlots && selectedProgrammerId && slots.length > 0">
+        <div *ngFor="let s of slots"
+             style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #ddd;">
+          <div><b>{{ s.date }}</b> — {{ s.hour }} ({{ s.status }})</div>
+          <button (click)="removeSlot(s)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </page-container>

@@ -5,6 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/user/user.service';
 import { ProgrammerService } from '../../core/programmer/programmer.service';
 
+import { AvailabilityService, AvailabilitySlot } from '../../core/availability/availability.service';
+import { ProgrammerProfile } from '../../core/models/programmer.model';
+
 import { AppUser } from '../../core/models/user.model';
 import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
@@ -19,7 +22,8 @@ import { PageContainerComponent } from '../../ui/container/container';
 export class AdminPanelComponent implements OnInit {
   private userService = inject(UserService);
   private programmerService = inject(ProgrammerService);
-  private cdr = inject(ChangeDetectorRef); // ✅
+  private availabilityService = inject(AvailabilityService);
+  private cdr = inject(ChangeDetectorRef);
 
   allUsers: AppUser[] = [];
   loading = false;
@@ -35,27 +39,42 @@ export class AdminPanelComponent implements OnInit {
     socialLinks: {}
   };
 
+  // Disponibilidad
+  programmers: ProgrammerProfile[] = [];
+  selectedProgrammerId = '';
+  slotDate = '';
+  slotHour = '';
+  slots: AvailabilitySlot[] = [];
+  loadingSlots = false;
+
   ngOnInit() {
     console.log("🟩 ADMIN PANEL INICIADO");
-    this.loadUsers(); // ✅ no hace falta async aquí
+    this.loadUsers();
+    this.loadProgrammers();
   }
 
   async loadUsers() {
     this.loading = true;
-    this.cdr.detectChanges(); // ✅ pinta "Cargando..." siempre
+    this.cdr.detectChanges();
 
     try {
       const users = await this.userService.getAllUsers();
-
-      this.allUsers = [...users]; // ✅ nueva referencia (importante)
+      this.allUsers = [...users];
       console.log("Usuarios cargados:", this.allUsers);
-
     } catch (e) {
       console.error("ERROR obteniendo usuarios:", e);
-
     } finally {
       this.loading = false;
-      this.cdr.detectChanges(); // ✅ fuerza repintado tras refresh
+      this.cdr.detectChanges();
+    }
+  }
+
+  async loadProgrammers() {
+    try {
+      this.programmers = await this.programmerService.getAllProgrammers();
+      this.cdr.detectChanges();
+    } catch (e) {
+      console.error('Error cargando programadores:', e);
     }
   }
 
@@ -88,5 +107,42 @@ export class AdminPanelComponent implements OnInit {
 
     this.selectedUser = null;
     await this.loadUsers();
+    await this.loadProgrammers();
+  }
+
+  async loadSlots() {
+    if (!this.selectedProgrammerId) return;
+
+    this.loadingSlots = true;
+    this.cdr.detectChanges();
+
+    try {
+      const date = this.slotDate ? this.slotDate : undefined;
+      const all = await this.availabilityService.getSlots(this.selectedProgrammerId, date);
+      this.slots = all.sort((a, b) => (a.date + a.hour).localeCompare(b.date + b.hour));
+    } catch (e) {
+      console.error('Error cargando slots:', e);
+      this.slots = [];
+    } finally {
+      this.loadingSlots = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async addSlot() {
+    if (!this.selectedProgrammerId || !this.slotDate || !this.slotHour) {
+      alert('Selecciona programador, fecha y hora');
+      return;
+    }
+
+    await this.availabilityService.addSlot(this.selectedProgrammerId, this.slotDate, this.slotHour);
+    this.slotHour = '';
+    await this.loadSlots();
+  }
+
+  async removeSlot(s: AvailabilitySlot) {
+    if (!s.id) return;
+    await this.availabilityService.deleteSlot(s.id);
+    await this.loadSlots();
   }
 }

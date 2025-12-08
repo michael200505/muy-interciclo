@@ -1,17 +1,19 @@
 export interface ProgrammerProfile {
-  uid: string;                 // mismo uid del usuario
+  uid: string;
   name: string;
   specialty: string;
   description: string;
   photoURL: string;
-  contactLinks: {
+
+  contactLinks?: {
     email?: string;
     linkedin?: string;
     github?: string;
     portfolio?: string;
     whatsapp?: string;
   };
-  socialLinks: {
+
+  socialLinks?: {
     twitter?: string;
     instagram?: string;
     facebook?: string;

@@ -1,0 +1,85 @@
+import { Component, inject, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+
+import { HeaderComponent } from '../../ui/header/header';
+import { PageContainerComponent } from '../../ui/container/container';
+
+import { NotificationService } from '../../core/notification/notification.service';
+import { AppNotification } from '../../core/models/notification.model';
+
+@Component({
+  selector: 'app-notifications',
+  standalone: true,
+  imports: [CommonModule, HeaderComponent, PageContainerComponent],
+  templateUrl: './notifications.html',
+  styleUrls: ['./notifications.scss']
+})
+export class NotificationsComponent implements OnInit {
+  private auth = inject(Auth);
+  private router = inject(Router);
+  private notifService = inject(NotificationService);
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
+
+  loading = true;
+  items: AppNotification[] = [];
+
+  private async waitUser() {
+    return await new Promise<any>((resolve) => {
+      onAuthStateChanged(this.auth, (u) => resolve(u));
+    });
+  }
+
+  async ngOnInit(): Promise<void> {
+    const user = await this.waitUser();
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    await this.load(user.uid);
+  }
+
+  private async load(uid: string) {
+    try {
+      this.loading = true;
+      this.cdr.detectChanges();
+
+      const data = await this.notifService.getByUser(uid);
+
+      this.zone.run(() => {
+        this.items = [...data];
+        this.loading = false;
+      });
+      this.cdr.detectChanges();
+    } catch (e) {
+      console.error('Error cargando notificaciones:', e);
+      this.zone.run(() => {
+        this.items = [];
+        this.loading = false;
+      });
+      this.cdr.detectChanges();
+    }
+  }
+
+  async markRead(n: AppNotification) {
+    if (!n.id) return;
+    await this.notifService.markRead(n.id);
+    n.read = true;
+    this.cdr.detectChanges();
+  }
+
+  async markAllRead() {
+    const user = this.auth.currentUser;
+    if (!user) return;
+    await this.notifService.markAllRead(user.uid);
+    this.items = this.items.map(x => ({ ...x, read: true }));
+    this.cdr.detectChanges();
+  }
+
+  trackById(_: number, n: AppNotification) {
+    return n.id;
+  }
+}

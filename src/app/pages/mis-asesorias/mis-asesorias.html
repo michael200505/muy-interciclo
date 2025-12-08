@@ -3,18 +3,25 @@
 <page-container>
   <h1>Mis asesorías</h1>
 
-  <div class="list">
-    <div class="asesoria-card" *ngFor="let a of asesorias">
-      <div class="asesoria-main">
-        <p><b>Programador:</b> {{ a.programmerId }}</p>
-        <p><b>Fecha:</b> {{ a.date }} - {{ a.hour }}</p> <!-- 👈 CAMBIO: hour -->
-        <p><b>Comentario enviado:</b> {{ a.comment }}</p>
-        <p><b>Estado:</b> {{ a.status }}</p>
+  <div *ngIf="loading">Cargando...</div>
 
-        <p *ngIf="a.response">
-          <b>Respuesta del programador:</b> {{ a.response }} <!-- 👈 CAMBIO: response -->
-        </p>
-      </div>
-    </div>
+  <div *ngIf="!loading && asesorias.length === 0">
+    Aún no has solicitado asesorías.
   </div>
-</page-container>
+
+  <div *ngIf="!loading && asesorias.length > 0" class="list">
+    <div class="item" *ngFor="let a of asesorias">
+  <p>
+    <b>Programador:</b>
+    {{ a.programmerName || a.programmerId }}
+    <span *ngIf="a.programmerSpecialty"> — {{ a.programmerSpecialty }}</span>
+  </p>
+
+  <p><b>Fecha:</b> {{ a.date }} — {{ a.hour }}</p>
+  <p><b>Motivo:</b> {{ a.comment || '—' }}</p>
+  <p><b>Estado:</b> {{ a.status }}</p>
+
+  <div *ngIf="a.response" class="response">
+    <b>Respuesta:</b> {{ a.response }}
+  </div>
+</div>

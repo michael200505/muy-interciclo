@@ -222,4 +222,46 @@ h2 {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+  .hint {
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #475569;
+  background: #f8fafc;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cta-row {
+  margin: 10px 0 12px;
+}
+
+.contact-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+  }
+}
+
 }

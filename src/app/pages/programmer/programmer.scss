@@ -41,3 +41,48 @@
   background: #dc3545;
   color: white;
 }
+.btn-new {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #2d7dff;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.btn-new:hover {
+  background: #1b5fd4;
+}
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hint {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  color: #555;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.links a {
+  text-decoration: underline;
+}

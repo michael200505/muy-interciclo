@@ -1,42 +1,39 @@
-// src/app/pages/programmer/programmer.ts
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Auth } from '@angular/fire/auth';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { AsesoriaService } from '../../core/asesoria/asesoria.service';
 import { Asesoria } from '../../core/models/asesoria.model';
-
 import { ProjectService } from '../../core/project/project.service';
 import { Project } from '../../core/models/project.model';
 
+import { NotificationService } from '../../core/notification/notification.service';
+
 import { HeaderComponent } from '../../ui/header/header';
 import { PageContainerComponent } from '../../ui/container/container';
-// ❗ Elimina este import **si NO usas `<admin-sidebar>` en tu HTML**
-// import { AdminSidebarComponent } from '../../ui/sidebar-admin/sidebar-admin';
 
 @Component({
   selector: 'app-programmer-panel',
   standalone: true,
-  imports: [
-    CommonModule,
-    HeaderComponent,
-    PageContainerComponent,
-    // ❗ SOLO agrégalo si lo usas en programmer.html
-    // AdminSidebarComponent
-  ],
+  imports: [CommonModule, RouterModule, HeaderComponent, PageContainerComponent],
   templateUrl: './programmer.html',
   styleUrls: ['./programmer.scss'],
 })
 export class ProgrammerPanelComponent implements OnInit {
-
   private asesoriaService = inject(AsesoriaService);
   private projectService = inject(ProjectService);
+  private notifService = inject(NotificationService);
+
   private auth = inject(Auth);
   private router = inject(Router);
 
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
+
   asesorias: Asesoria[] = [];
-  projects: Project[] = []; // ✔ Ahora tipado correctamente
+  projects: Project[] = [];
+  loadingProjects = false;
 
   async ngOnInit(): Promise<void> {
     const user = this.auth.currentUser;
@@ -47,45 +44,97 @@ export class ProgrammerPanelComponent implements OnInit {
     }
 
     try {
-      // Cargar asesorías como antes
-      this.asesorias = await this.asesoriaService.getAsesoriasByRequest(user.uid);
+      this.loadingProjects = true;
+      this.cdr.detectChanges();
 
-      // ✔ Cargar proyectos del usuario
-      this.projects = await this.projectService.getProjectsByUser(user.uid);
+      const [asesorias, projects] = await Promise.all([
+        this.asesoriaService.getAsesoriasByRequest(user.uid),
+        this.projectService.getProjectsByUser(user.uid),
+      ]);
 
+      this.zone.run(() => {
+        this.asesorias = [...asesorias];
+        this.projects = [...projects];
+        this.loadingProjects = false;
+      });
+
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Error cargando datos del panel:', error);
-
-      this.asesorias = [];
-      this.projects = [];
+      this.zone.run(() => {
+        this.asesorias = [];
+        this.projects = [];
+        this.loadingProjects = false;
+      });
+      this.cdr.detectChanges();
     }
   }
 
-  // APROBAR ASESORÍA
+  // ✅ APROBAR ASESORÍA + NOTIFICACIÓN
   async approve(a: Asesoria) {
     if (!a.id) return;
 
-    await this.asesoriaService.updateStatus(
-      a.id,
-      'approved',
-      'Tu asesoría ha sido aprobada.'
-    );
+    const response = 'Tu asesoría ha sido aprobada.';
+    await this.asesoriaService.updateStatus(a.id, 'approved', response);
+
+    // notificación al usuario
+    await this.notifService.send({
+      toUid: a.userId,
+      roleTarget: 'user',
+      title: 'Asesoría aprobada ✅',
+      message: `Tu asesoría con el programador fue aprobada para ${a.date} a las ${a.hour}.`,
+      read: false,
+      createdAt: Date.now(),
+      asesoriaId: a.id,
+      programmerId: a.programmerId,
+      userId: a.userId,
+      date: a.date,
+      hour: a.hour,
+    });
 
     a.status = 'approved';
-    a.response = 'Tu asesoría ha sido aprobada.';
+    a.response = response;
+    this.cdr.detectChanges();
   }
 
-  // RECHAZAR ASESORÍA
+  // ✅ RECHAZAR ASESORÍA + NOTIFICACIÓN
   async reject(a: Asesoria) {
     if (!a.id) return;
 
-    await this.asesoriaService.updateStatus(
-      a.id,
-      'rejected',
-      'Lo sentimos, tu asesoría ha sido rechazada.'
-    );
+    const response = 'Lo sentimos, tu asesoría ha sido rechazada.';
+    await this.asesoriaService.updateStatus(a.id, 'rejected', response);
+
+    await this.notifService.send({
+      toUid: a.userId,
+      roleTarget: 'user',
+      title: 'Asesoría rechazada ❌',
+      message: `Tu asesoría para ${a.date} a las ${a.hour} fue rechazada. Revisa el detalle en “Mis asesorías”.`,
+      read: false,
+      createdAt: Date.now(),
+      asesoriaId: a.id,
+      programmerId: a.programmerId,
+      userId: a.userId,
+      date: a.date,
+      hour: a.hour,
+    });
 
     a.status = 'rejected';
-    a.response = 'Lo sentimos, tu asesoría ha sido rechazada.';
+    a.response = response;
+    this.cdr.detectChanges();
+  }
+
+  // ✅ ELIMINAR PROYECTO
+  async deleteProject(p: Project) {
+    if (!p.id) {
+      alert('Este proyecto no tiene id. No se puede eliminar.');
+      return;
+    }
+
+    const ok = confirm(`¿Eliminar el proyecto "${p.title}"?`);
+    if (!ok) return;
+
+    await this.projectService.deleteProject(p.id);
+    this.projects = this.projects.filter(x => x.id !== p.id);
+    this.cdr.detectChanges();
   }
 }
